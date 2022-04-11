@@ -1,0 +1,37 @@
+{
+  "name": "we-lvlup-instagram",
+  "version": "1.0.0",
+  "description": "Instagran Clone - project 2 from Accedia internship",
+  "main": "index.js",
+  "scripts": {
+    "start": "webpack serve --mode=development",
+    "build": "rm -rf dist && webpack --mode-production",
+    "lint": "eslint --ext .ts,.tsx src",
+    "format": "prettier --write --check src"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nikolaypleshkov/we-lvlup-instagram.git"
+  },
+  "keywords": [
+    "react",
+    "react-typescript",
+    "babel",
+    "webpack",
+    "prettier",
+    "eslint"
+  ],
+  "author": "Nikolay Pleshkov",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/nikolaypleshkov/we-lvlup-instagram/issues"
+  },
+  "homepage": "https://github.com/nikolaypleshkov/we-lvlup-instagram#readme",
+  "devDependencies": {
+    "@babel/core": "^7.17.9",
+    "@babel/preset-env": "^7.16.11",
+    "@babel/preset-react": "^7.16.7",
+    "@babel/preset-typescript": "^7.16.7",
+    "babel-loader": "^8.2.4"
+  }
+}
