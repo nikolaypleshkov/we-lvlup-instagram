@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/explicit-function-return-type */
+/* eslint-disable @typescript-eslint/no-var-requires */
 const webpack = require("webpack")
 const path = require("path")
 const HtmlWebpackPlugin = require("html-webpack-plugin")
@@ -28,6 +30,10 @@ module.exports = (env, options) => {
             },
           },
         },
+        {
+          test: /\.s?css$/,
+          use: ['style-loader', 'css-loader'],
+        }
       ],
     },
     devtool: isDevelopment ? "eval-cheap-module-source-map" : "nosources-source-map",
@@ -66,7 +72,7 @@ module.exports = (env, options) => {
               removeStyleLinkTypeAttributes: true,
               useShortDoctype: true,
             },
-        template: "./src/index.html",
+        template: "./public/index.html",
       }),
       ...(isDevelopment ? [new webpack.HotModuleReplacementPlugin()] : []),
     ],
@@ -84,13 +90,6 @@ module.exports = (env, options) => {
       relatedAssets: true,
       timings: false,
       version: false,
-    },
-    devServer: {
-      contentBase: "dist",
-      historyApiFallback: true,
-      host: "0.0.0.0",
-      hot: true,
-      port: 8080,
     },
   }
 }
