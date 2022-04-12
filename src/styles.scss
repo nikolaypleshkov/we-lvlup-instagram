@@ -1,6 +1,10 @@
+$blue-color: red;
 .wrapper{
     display: flex;
     justify-content: center;
     align-items: center;
     flex-direction: column;
+    h4{
+        font-size: 18pt;
+    }
 }

@@ -9,6 +9,9 @@ module.exports = (env, options) => {
 
   return {
     mode: isDevelopment ? "development" : "production",
+    devServer: {
+      port: 3000,
+    },
     target: "web",
     entry: "./src/index.tsx",
     output: {
@@ -32,7 +35,7 @@ module.exports = (env, options) => {
         },
         {
           test: /\.s?css$/,
-          use: ['style-loader', 'css-loader'],
+          use: ['style-loader', 'css-loader', "sass-loader"],
         }
       ],
     },
