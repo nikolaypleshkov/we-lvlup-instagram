@@ -1,0 +1,24 @@
+ls:
+  src/components:
+    .dir: kebab-case
+    .module.scss: kebab-case
+    .props.tsx: kebab-case
+    .tsx: kebab-case
+  src/hooks:
+    .dir: kebab-case
+    .tsx: kebab-case
+  src/layouts:
+    .dir: kebab-case
+    .module.scss: kebab-case
+    .props.tsx: kebab-case
+    .tsx: kebab-case
+  src/pages:
+    .dir: kebab-case
+    .tsx: kebab-case
+  src/styles:
+    .dir: kebab-case
+    .module.scss: kebab-case
+    .scss: kebab-case
+  src/utils:
+    .dir: kebab-case
+    .tsx: kebab-case

@@ -7,7 +7,9 @@
     "start": "webpack serve --mode=development",
     "build": "rm -rf dist && webpack --mode-production",
     "lint": "eslint --ext .ts,.tsx src",
-    "format": "prettier --write --check src"
+    "lint:fs": "ls-lint",
+    "prettier:fix": "prettier --write",
+    "prettier:check": "prettier --check"
   },
   "repository": {
     "type": "git",
@@ -32,6 +34,7 @@
     "@babel/preset-env": "^7.16.11",
     "@babel/preset-react": "^7.16.7",
     "@babel/preset-typescript": "^7.16.7",
+    "@ls-lint/ls-lint": "^1.11.0",
     "@types/fork-ts-checker-webpack-plugin": "^0.4.5",
     "@types/react": "^18.0.1",
     "@types/react-dom": "^18.0.0",
@@ -45,8 +48,12 @@
     "eslint-plugin-react-hooks": "^4.4.0",
     "fork-ts-checker-webpack-plugin": "^7.2.4",
     "html-webpack-plugin": "^5.5.0",
+    "husky": "^7.0.4",
+    "lint-staged": "^12.3.7",
     "node-sass": "^7.0.1",
     "prettier": "^2.6.2",
+    "sass": "^1.50.0",
+    "sass-loader": "^12.6.0",
     "style-loader": "^3.3.1",
     "ts-node": "^10.7.0",
     "typescript": "^4.6.3",
