@@ -6,6 +6,6 @@
       "noEmit": true,
       "skipLibCheck": true,
       "strict": true,
-      "types": ["react/next", "react-dom/next"]
+      "types": ["react/next", "react-dom/next", "node"]
     }
 }
