@@ -1,13 +1,28 @@
-$blue-color: red;
-*{
-    font-family: "Roboto";
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
-.wrapper{
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
-    h4{
-        font-size: 18pt;
-    }
+#app, html, body{
+    height: 100vh;
+    background-color: #fafafa;
+}
+
+.MuiButton-root{
+    text-transform: none !important;
+}
+.MuiCardContent-root:last-child {
+  padding-bottom: 0px !important;
+}
+.MuiInputBase-input{
+  height: 0.8116em !important;
+}
+.MuiOutlinedInput-inputMarginDense {
+  padding-top: 9.5px !important;
+  padding-bottom: 7.5px !important;
+}
+
+a{
+  color: #898989;
+  text-decoration: none;
 }
