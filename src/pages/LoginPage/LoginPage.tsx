@@ -3,12 +3,11 @@ import Box from "@material-ui/core/Box";
 import useStyles from "./styles";
 import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
-import RegisterForm from '../../components/Forms/Register/RegisterForm';
-import CardBox from '../../components/Card/CardBox';
-import { Button } from '@material-ui/core';
-import { Link } from 'react-router-dom';
-import LoginForm from '../../components/Forms/Login/LoginForm';
-import Footer from '../../layouts/Footer/Footer';
+import CardBox from 'components/Card/CardBox';
+import { Button } from "@material-ui/core";
+import { Link } from "react-router-dom";
+import LoginForm from "pages/LoginPage/LoginForm/LoginForm";
+import Footer from 'layouts/Footer/Footer';
 const LoginPage = () => {
     const classes = useStyles();
   return (

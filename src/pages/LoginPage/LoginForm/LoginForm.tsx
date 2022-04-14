@@ -1,14 +1,14 @@
-import React from 'react'
+import React from "react"
 import Box, { BoxProps } from "@material-ui/core/Box";
-import Button from '@material-ui/core/Button'
-import FormControl from '@material-ui/core/FormControl'
-import TextField from '@material-ui/core/TextField'
+import Button from "@material-ui/core/Button"
+import FormControl from "@material-ui/core/FormControl"
+import TextField from "@material-ui/core/TextField"
 import FacebookIcon from "@material-ui/icons/Facebook";
-import { PrimaryButton } from '../../Buttons/Buttons';
+import { PrimaryButton } from "../../../components/Buttons/Buttons";
 import useStyles from "./styles";
 import  logo  from "../../../assets/images/logo/logo.webp";
-import { useForm } from 'react-hook-form'
-
+import { useForm } from "react-hook-form"
+import "styles/components/Form.scss";
 type FormData = {
   email: string;
   password: string;
@@ -33,8 +33,10 @@ const LoginForm = () => {
       </Box>
       <Box component="form" className={classes.form}>
         <FormControl className={classes.form}>
-          <TextField size="small" id="outlined-size-small" variant="outlined" placeholder="Email" className={classes.textInput} {...register("email")} />
-          <TextField size="small" type="password" id="outlined-password-input" variant="outlined" placeholder="Password" className={classes.textInput} {...register("password")} />
+          <TextField size="small" id="outlined-size-small" variant="outlined" placeholder="Email" className={classes.textInput} />
+        </FormControl>
+        <FormControl className={classes.form}>
+          <TextField size="small" type="password" id="outlined-password-input" variant="outlined" placeholder="Password" className={classes.textInput} />
         </FormControl>
         <FormControl className={classes.form}>
           <PrimaryButton>Login</PrimaryButton>

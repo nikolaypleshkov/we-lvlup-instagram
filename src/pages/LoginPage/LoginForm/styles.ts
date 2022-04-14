@@ -7,7 +7,7 @@ export default makeStyles(() => ({
     },
     textInput: {
         width: "100%",
-        marginTop: "5%"
+        marginTop: "2%"
     },
     cardLogoContainer:{
         maxHeight: "100%",
@@ -38,12 +38,3 @@ export default makeStyles(() => ({
         textAlign: "center"
     }
 }))
-
-// mutedText: {
-//     color: "#8e8e8e",
-//     fontSize: "17px",
-//     fontWeight: "600",
-//     lineHeight: "20px",
-//     margin: "0 40px 10px",
-//     textAlign: "center"
-// }
