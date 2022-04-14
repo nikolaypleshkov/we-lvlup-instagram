@@ -8,5 +8,18 @@
       ],
       "@babel/preset-react",
       "@babel/preset-typescript"
+    ],
+    "plugins": [
+      [
+        "module-resolver",
+        {
+          "extensions": [".ts", ".tsx"],
+          "root": ["./src"],
+          "alias": {
+            "root": ".",
+            "src": "/src"
+          }
+        }
+      ]
     ]
 }
