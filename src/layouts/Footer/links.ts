@@ -1,42 +1,42 @@
 export const Links = [
     {
-        path: '/meta',
+        path: "/meta",
         name: "Meta",
     },
     {
-        path: '/about',
+        path: "/about",
         name: "About",
     },
     {
-        path: '/jobs',
+        path: "/jobs",
         name: "Jobs",
     },
     {
-        path: '/help',
+        path: "/help",
         name: "Help",
     },
     {
-        path: '/api',
+        path: "/api",
         name: "API",
     },
     {
-        path: '/privacy',
+        path: "/privacy",
         name: "Privacy",
     },
     {
-        path: '/terms',
+        path: "/terms",
         name: "Terms",
     },
     {
-        path: '/top-accounts',
+        path: "/top-accounts",
         name: "Top Accounts",
     },
     {
-        path: '/hashtags',
+        path: "/hashtags",
         name: "Hashtags",
     },
     {
-        path: '/location',
+        path: "/location",
         name: "Location",
     },
 ]
