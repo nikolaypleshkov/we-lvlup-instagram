@@ -1,0 +1,24 @@
+$error-color: #da2424;
+$success-color:#096484; 
+.error-label{
+    position: absolute;
+    right: 5px;
+    margin-top: 9px;
+    color: $error-color;
+}
+
+.error-message{
+    color: $error-color;
+    width: 100%;
+    text-align: center;
+    font-weight: 700;
+    font-size: 15pt;
+}
+
+.success-message{
+    color: $success-color;
+    width: 100%;
+    text-align: center;
+    font-weight: 700;
+    font-size: 15pt;
+}
