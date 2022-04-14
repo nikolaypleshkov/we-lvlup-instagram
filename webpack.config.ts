@@ -18,7 +18,11 @@ const config: Configuration = {
     publicPath: "/"
   },
   resolve: {
-    extensions: [".ts", ".tsx", ".js"]
+    extensions: [".ts", ".tsx", ".js"],
+    alias: {
+      root: __dirname,
+      src: path.resolve(__dirname, "src")
+    }
   },
   module: {
     rules: [
