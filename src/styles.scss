@@ -3,9 +3,9 @@
   padding: 0;
   box-sizing: border-box;
 }
-#app, html, body{
+#app, html, body, main{
     height: 100vh;
-    background-color: #fafafa;
+    background-color: #fafafa !important;
 }
 
 .MuiButton-root{

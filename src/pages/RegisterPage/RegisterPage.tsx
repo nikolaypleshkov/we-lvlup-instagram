@@ -1,11 +1,11 @@
 import React from "react"
-import Box from "@material-ui/core/Box";
+import Box from "@mui/material/Box";
 import useStyles from "./styles";
-import Grid from "@material-ui/core/Grid";
-import Typography from "@material-ui/core/Typography";
+import Grid from "@mui/material/Grid";
+import Typography from "@mui/material/Typography";
 import RegisterForm from "pages/RegisterPage/RegisterForm/RegisterForm";
 import CardBox from "components/Card/CardBox";
-import { Button } from "@material-ui/core";
+import Button from "@mui/material/Button";
 import { Link } from "react-router-dom";
 import Footer from "layouts/Footer/Footer";
 const RegisterPage = () => {
