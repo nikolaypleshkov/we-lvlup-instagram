@@ -1,6 +1,6 @@
-import { makeStyles } from "@material-ui/core";
-
-export default makeStyles((theme) => ({
+import { makeStyles } from "@mui/styles";
+import { Theme } from "@mui/system";
+export default makeStyles((theme: Theme) => ({
     root: {
         flexGrow: 1,
         height: "100%",
@@ -9,7 +9,8 @@ export default makeStyles((theme) => ({
         flexGrow: 1,
         backgroundColor: theme.palette.background.default,
         padding: theme.spacing(3),
-        height: "100%"
+        height: "100%",
+        background: "transparent !important"
     },
     bannerImage:{
         maxWidth: "430px",

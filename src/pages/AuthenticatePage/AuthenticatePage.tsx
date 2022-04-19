@@ -1,7 +1,8 @@
 import React from "react";
-import Box from "@material-ui/core/Box";
-import { BoxProps, Button, Typography } from "@material-ui/core";
-import Grid from "@material-ui/core/Grid";
+import Box, { BoxProps } from "@mui/material/Box";
+import Button from "@mui/material/Button";
+import Typography from "@mui/material/Typography";
+import Grid from "@mui/material/Grid";
 import CardBox from "components/Card/CardBox";
 import banner from "assets/images/banner/phone-banner.webp";
 import { Link } from "react-router-dom";
