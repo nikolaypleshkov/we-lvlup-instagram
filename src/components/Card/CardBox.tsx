@@ -1,7 +1,7 @@
 import React from "react"
-import Card from "@material-ui/core/Card";
-import CardActions from "@material-ui/core/CardActions";
-import CardContent from "@material-ui/core/CardContent";
+import Card from "@mui/material/Card";
+import CardActions from "@mui/material/CardActions";
+import CardContent from "@mui/material/CardContent";
 import useStyles from "./styles";
 import "./Card.scss";
 const CardBox = ({ children }: { children: React.ReactNode | React.ReactNode[]; }): JSX.Element => {

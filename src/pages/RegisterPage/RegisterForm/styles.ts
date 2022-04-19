@@ -1,13 +1,19 @@
-import { makeStyles } from "@material-ui/core/styles";
+import { makeStyles } from "@mui/styles";
 
 export default makeStyles(() => ({
     form: {
         minWidth: "100%",
+        display: "grid"
+    },
+    grid: {
+        display: "grid",
         marginTop: "5%"
     },
+    formControl: {
+        marginTop: "5% !important",
+    },
     textInput: {
-        width: "100%",
-        marginTop: "2%"
+        width: "100%"
     },
     cardLogoContainer:{
         maxHeight: "100%",

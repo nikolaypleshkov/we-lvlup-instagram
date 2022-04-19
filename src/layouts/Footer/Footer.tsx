@@ -1,7 +1,7 @@
 import React from "react"
-import Box from "@material-ui/core/Box"
+import Box from "@mui/material/Box"
 import useStyles from "./styles";
-import ListItem from "@material-ui/core/ListItem";
+import ListItem from "@mui/material/ListItem";
 import { Links as links } from "./links";
 const Footer = (): JSX.Element => {
     const classes = useStyles();
