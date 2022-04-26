@@ -1,24 +1,57 @@
-import React from "react"
-import AppBar from "@material-ui/core/AppBar";
-import Box from "@material-ui/core/Box";
-import Toolbar from "@material-ui/core/Toolbar";
-import Typography from "@material-ui/core/Typography";
-import Button from "@material-ui/core/Button";
-import IconButton from "@material-ui/core/IconButton";
-import MenuIcon from "@material-ui/icons/Menu";
+import React, {useEffect, useState} from "react";
+import AppBar from "@mui/material/AppBar";
+import Toolbar from "@mui/material/Toolbar";
+import Box, { BoxProps } from "@mui/material/Box";
+import { Link, LinkProps, useLocation } from "react-router-dom";
+import useStyles from "./styles";
+import { Button, Paper } from "@mui/material";
+import SwipeableEdgeDrawer from "components/SwipeableEdgeDrawer/SwipeableEdgeDrawer";
+import MenuIcon from '@mui/icons-material/Menu';
+import AddBoxOutlinedIcon from '@mui/icons-material/AddBoxOutlined';
+import FavoriteBorderTwoToneIcon from '@mui/icons-material/FavoriteBorderTwoTone';
+import { useDispatch, useSelector } from 'react-redux'
+import store, { RootState } from 'redux/store';
+
 const TopBar = (): JSX.Element => {
+  const classes = useStyles();
+  const [open, setOpen] = useState(false);
+  const { user } = useSelector((state: RootState) => state.auth);
   return (
-    <Box sx={{ flexGrow: 1 }}>
-      <AppBar position="static">
+    <div className={classes.root}>
+      <AppBar position="fixed" className={classes.appbarRoot}>
         <Toolbar>
-          <IconButton color="secondary">
-            <MenuIcon />
-          </IconButton>
-          <Typography>Instagram Test</Typography>
-          <Button color="inherit">Login</Button>
+          {
+            location.pathname === "/profile" 
+            ? <Box component="h2" sx={{
+              color: "#000"
+            }}>{user?.username}</Box> 
+            : <Box component="div" className={classes.logo} > </Box>
+          }
+            <div  className={classes.navlinks}>
+              <Button className={classes.link}>
+                <AddBoxOutlinedIcon sx={{color: "black"}} />
+              </Button>
+              <Button className={classes.link}>
+                <FavoriteBorderTwoToneIcon sx={{color: "black"}} />
+              </Button>
+
+              {
+                location.pathname === "/profile" && (
+                  <Button className={classes.link} onClick={() => setOpen(true)}>
+                     <MenuIcon sx={{color: "black"}} /> 
+                  </Button>
+                )
+              }
+            </div>
         </Toolbar>
       </AppBar>
-    </Box>
+      {
+        location.pathname === "/profile" && (
+          <SwipeableEdgeDrawer openStauts={open} setOpenState={setOpen}  />
+        )
+
+      }
+    </div>
   );
 }
 
