@@ -4,8 +4,25 @@
   box-sizing: border-box;
 }
 #app, html, body, main{
-    height: 100vh;
     background-color: #fafafa !important;
+}
+body {
+  // use 100 percent of view height
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  margin: 0;
+  padding: 0;
+}
+.main {
+  margin: calc(1rem - (-7%)) 0 auto 0;
+  padding: 10px;
+  overflow: auto;
+}
+/* overwrite */
+body {
+  margin-bottom: 0;
 }
 
 .MuiButton-root{
