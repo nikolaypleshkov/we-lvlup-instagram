@@ -1,6 +1,7 @@
 import {Configuration} from "webpack"
 import * as path from "path"
 import HtmlWebpackPlugin from "html-webpack-plugin"
+import TerserPlugin from "terser-webpack-plugin";
 
 import "webpack-dev-server"
 const isDevelopment = true
@@ -63,7 +64,11 @@ const config: Configuration = {
         }
       },
       name: false
-    }
+    },
+    minimize: true,
+    minimizer: [new TerserPlugin({
+      parallel: true,
+    })]
   },
   plugins: [
     new HtmlWebpackPlugin({
