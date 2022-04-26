@@ -2,10 +2,9 @@ import { ThunkAction } from "redux-thunk";
 
 import { RegisterData, AuthAction, USER, User, LOADING, LOGOUT, LoginData, ERROR, SUCCESS } from "redux/types";
 import { RootState } from "redux/store";
-import { createUserWithEmailAndPassword, getAuth } from "firebase/auth";
+import { createUserWithEmailAndPassword, getAuth, signInWithEmailAndPassword } from "firebase/auth";
 import { app, db } from "service/firebaseSetup";
-import { addDoc, collection, doc } from "firebase/firestore";
-
+import { addDoc, collection, doc, getDocs, query, where } from "firebase/firestore";
 const auth = getAuth(app);
 export const signup = (data: RegisterData, onError: () => void): ThunkAction<void, RootState, null, AuthAction> => {
     return async (dispatch) => {
@@ -30,6 +29,7 @@ export const signup = (data: RegisterData, onError: () => void): ThunkAction<voi
                     type: USER,
                     payload: userCredential
                 });
+                onError();
             }
         }
         catch(err: any){
@@ -54,11 +54,33 @@ export const loading = (value: boolean): ThunkAction<void, RootState, null, Auth
 export const login = (data: LoginData, onError: () => void): ThunkAction<void, RootState, null, AuthAction> => {
     return async (dispatch) => {
         try{
-
+            const res = await (await signInWithEmailAndPassword(auth, data.email, data.password)).user;
+            const qry = query(collection(db, "users"), where("uuid", "==", res.uid));
+            const querySnapshot = await getDocs(qry);
+            const snapshot = querySnapshot.docs[0];
+            const user = snapshot.data();
+            const userCredential: User = {
+                email: user.email,
+                fullname: user.fullname,
+                username: user.username,
+                posts: user.posts,
+                storyPosts: user.storyPosts,
+                followers: user.followers,
+                followersID: user.followersID,
+                following: user.following,
+                followingID: user.followersID,
+                bio: user.bio,
+                uuid: user.uuid
+            }
+            dispatch({
+                type: USER,
+                payload: userCredential
+            })
+            onError();
         }
         catch(err: any){
             onError();
-            dispatch(setError(err.message));
+            dispatch(setError(err.code));
         }
     }
 }

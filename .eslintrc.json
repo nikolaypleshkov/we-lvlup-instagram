@@ -3,7 +3,7 @@
     "browser": true,
     "es2021": true
   },
-  "extends": ["plugin:react/recommended", "airbnb", "plugin:prettier/recommended","react-hooks"],
+  "extends": ["plugin:react/recommended", "airbnb","react-hooks","plugin:prettier/recommended"],
   "settings": {
     "import/resolver": {
       "node": {

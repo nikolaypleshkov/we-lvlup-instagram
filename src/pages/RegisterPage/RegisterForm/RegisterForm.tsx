@@ -34,7 +34,7 @@ const schema = Joi.object({
 
 const RegisterForm = () => {
   const classes = useStyles();
-  const { register, handleSubmit, formState: { errors } } = useForm<UserInterface>({
+  const { register, handleSubmit, formState: { errors }, setError } = useForm<UserInterface>({
     resolver: joiResolver(schema),
   });
   const [message, setMessage] = useState("");
@@ -45,7 +45,7 @@ const RegisterForm = () => {
   useEffect(() => {
     return () => {
       if(error){
-        dispatch(setError(""));
+        // dispatch(setError(""));
       }
     }
   }, [error, dispatch])
@@ -53,7 +53,7 @@ const RegisterForm = () => {
   const formSubmit: SubmitHandler<UserInterface> = async(data: UserInterface) =>{
     const { email, fullname, username, password } = data;
     if(error){
-      dispatch(setError(""));
+      // dispatch(setError(""));
     }
     setLoading(true);
     dispatch(signup({ email, password, fullname, username}, () => setLoading(false)));
