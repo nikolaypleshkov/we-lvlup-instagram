@@ -25,7 +25,6 @@ export default makeStyles((theme: Theme) => ({
     },
     card: {
         ["@media screen and (max-width: 912px)"]: {
-            padding: "0px !important",
             maxWidth: "100%",
             flexBasis: "unset !important"
         }
@@ -33,6 +32,6 @@ export default makeStyles((theme: Theme) => ({
     typo: {
         display: "flex",
         justifyContent: "center",
-        alignItems: "center"
+        alignItems: "center",
     }
 }));

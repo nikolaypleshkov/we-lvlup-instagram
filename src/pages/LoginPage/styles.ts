@@ -23,10 +23,10 @@ export default makeStyles((theme: Theme) => ({
         height: "auto"
     },
     gridContainer: {
+        width: "100%"
     },
     card: {
         ["@media screen and (max-width: 912px)"]: {
-            padding: "0px !important",
             maxWidth: "100%",
             flexBasis: "unset !important"
         }

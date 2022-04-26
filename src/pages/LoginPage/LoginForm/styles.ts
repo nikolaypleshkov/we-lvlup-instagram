@@ -3,7 +3,6 @@ import { makeStyles } from "@mui/styles";
 export default makeStyles(() => ({
     form: {
         minWidth: "100%",
-        marginTop: "5%",
         display: "grid"
     },
     grid: {
