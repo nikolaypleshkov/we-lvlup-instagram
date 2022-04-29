@@ -16,7 +16,7 @@ import UserPage from "pages/UserPage/UserPage";
 import TopBar from "layouts/TopBar";
 import { logout } from "redux/actions/authActions";
 import UserSettingPage from "pages/UserSettingPage/UserSettingPage";
-import UploadePage from "pages/UploadPage/UploadPage";
+import UploadPage from "pages/UploadPage/UploadPage";
 
 const theme = createTheme();
 const App = (): JSX.Element => {
@@ -70,7 +70,7 @@ const App = (): JSX.Element => {
         } />
         <Route path="/add-post" element={
           <ProtectedRoute>
-            <UploadePage />
+            <UploadPage />
           </ProtectedRoute>
         } />
       </Routes>
