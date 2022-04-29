@@ -16,19 +16,20 @@ import UserPage from "pages/UserPage/UserPage";
 import TopBar from "layouts/TopBar";
 import { logout } from "redux/actions/authActions";
 import UserSettingPage from "pages/UserSettingPage/UserSettingPage";
+import UploadPage from "pages/UploadPage/UploadPage";
 
 const theme = createTheme();
 const App = (): JSX.Element => {
   const { authenticated } = useSelector((state: RootState) => state.auth);
   const location = useLocation();
   const dispatch = useDispatch();
-  console.log(location.pathname);
   
   useEffect(() => {
     if(location.pathname === "/logout"){
       dispatch(logout());
     }
-  }, [location])
+    console.log(location.pathname);
+  }, [location, dispatch])
 
   return (
     <ThemeProvider theme={theme}>
@@ -66,6 +67,11 @@ const App = (): JSX.Element => {
         } />
         <Route path="/user-settings" element={
           <UserSettingPage />
+        } />
+        <Route path="/add-post" element={
+          <ProtectedRoute>
+            <UploadPage />
+          </ProtectedRoute>
         } />
       </Routes>
     </ThemeProvider>
