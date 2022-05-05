@@ -1,6 +1,6 @@
 import BottomNav from 'layouts/BottomNavigation';
 import TopBar from 'layouts/TopBar';
-import React from 'react'
+import React, { useEffect } from 'react'
 import { useSelector } from 'react-redux'
 import { Navigate, Route, useLocation } from 'react-router-dom';
 import store, { RootState } from 'redux/store'
@@ -9,13 +9,18 @@ import AddBoxOutlinedIcon from '@mui/icons-material/AddBoxOutlined';
 import FavoriteBorderTwoToneIcon from '@mui/icons-material/FavoriteBorderTwoTone';
 import useSwipeableDrawer from 'hooks/useSwipeableDrawer';
 const ProtectedRoute = ({children} : {children: JSX.Element}) => {
-    const { authenticated } = useSelector((state: RootState) => state.auth);
+    const { authenticated, initAuth } = useSelector((state: RootState) => state.auth);
     const location = useLocation();
+    useEffect(() => {
+        console.log(initAuth);
+        
+    }, [])
     return authenticated ? (
     <>
-        <TopBar/>
+        {
+            initAuth ?  <Navigate to="/user-settings" replace state={{ from: location }} /> : ""
+        }
         {children}
-        <BottomNav/>
     </>
     ) : 
     <Navigate to="/" replace state={{ from: location }} />
