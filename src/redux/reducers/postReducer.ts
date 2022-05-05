@@ -1,4 +1,4 @@
-import { POST, PostState, UserPostAction } from "redux/types";
+import { LIKE, POST, PostState, UserPostAction } from "redux/types";
 
 const initState: PostState = {
     user: null,
@@ -12,6 +12,13 @@ export default (state = initState, action: UserPostAction) => {
                 ...state,
                 posts: action.payload,
                 user: action.user
+            }
+        }
+        case LIKE: {
+            return{
+                ...state,
+                post: action.payload,
+                user: action.user   
             }
         }
         default: 
