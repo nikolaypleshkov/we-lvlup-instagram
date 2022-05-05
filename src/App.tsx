@@ -17,6 +17,7 @@ import TopBar from "layouts/TopBar";
 import { logout } from "redux/actions/authActions";
 import UserSettingPage from "pages/UserSettingPage/UserSettingPage";
 import UploadPage from "pages/UploadPage/UploadPage";
+import PostPage from "pages/PostPage/PostPage";
 
 const theme = createTheme();
 const App = (): JSX.Element => {
@@ -73,6 +74,7 @@ const App = (): JSX.Element => {
             <UploadPage />
           </ProtectedRoute>
         } />
+        <Route path="/post/:id" element={<PostPage />}/>
       </Routes>
     </ThemeProvider>
   )
