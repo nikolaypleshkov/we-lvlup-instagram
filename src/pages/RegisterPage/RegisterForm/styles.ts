@@ -34,7 +34,7 @@ export default makeStyles(() => ({
         lineHeight: "20px",
         margin: "6px 40px 10px",
         textAlign: "center",
-        fontFamily: "Roboto"
+        fontFamily: "Roboto",
     },
     terms: {
         color: "#8e8e8e",
