@@ -1,10 +1,10 @@
 import { ThunkAction } from "redux-thunk";
 
-import { RegisterData, AuthAction, USER, User, LOADING, LOGOUT, LoginData, ERROR, SUCCESS } from "redux/types";
+import { RegisterData, AuthAction, USER, User, LOADING, LOGOUT, LoginData, ERROR, SUCCESS, LOGIN, REGISTER, AUTH_INIT } from "redux/types";
 import { RootState } from "redux/store";
 import { createUserWithEmailAndPassword, getAuth, signInWithEmailAndPassword } from "firebase/auth";
 import { app, db } from "service/firebaseSetup";
-import { addDoc, collection, doc, getDocs, query, where } from "firebase/firestore";
+import { addDoc, collection, doc, DocumentData, getDocs, query, where } from "firebase/firestore";
 const auth = getAuth(app);
 export const signup = (data: RegisterData, onError: () => void): ThunkAction<void, RootState, null, AuthAction> => {
     return async (dispatch) => {
@@ -22,11 +22,12 @@ export const signup = (data: RegisterData, onError: () => void): ThunkAction<voi
                     following: 0,
                     followingID: [],
                     bio: "",
-                    uuid: res.user.uid
+                    uuid: res.user.uid,
+                    profileImage: ""
                 };
                 await addDoc(collection(db, "users"), userCredential);
                 dispatch({
-                    type: USER,
+                    type: REGISTER,
                     payload: userCredential
                 });
                 onError();
@@ -70,10 +71,11 @@ export const login = (data: LoginData, onError: () => void): ThunkAction<void, R
                 following: user.following,
                 followingID: user.followersID,
                 bio: user.bio,
-                uuid: user.uuid
+                uuid: user.uuid,
+                profileImage: user.profileImage
             }
             dispatch({
-                type: USER,
+                type: LOGIN,
                 payload: userCredential
             })
             onError();
@@ -81,6 +83,38 @@ export const login = (data: LoginData, onError: () => void): ThunkAction<void, R
         catch(err: any){
             onError();
             dispatch(setError(err.code));
+        }
+    }
+}
+
+export const profileConfig = (data: User): ThunkAction<void, RootState, null, AuthAction> => {
+    return async (dispatch) => {
+        const qry = query(collection(db, "users"), where("uuid", "==", data.uuid));
+        const querySnapshot = await getDocs(qry);
+        const snapshot = querySnapshot.docs[0];
+        const user = snapshot.data();
+        const userCredential: User = {
+            email: user.email,
+            fullname: user.fullname,
+            username: user.username,
+            posts: user.posts,
+            storyPosts: user.storyPosts,
+            followers: user.followers,
+            followersID: user.followersID,
+            following: user.following,
+            followingID: user.followersID,
+            bio: user.bio,
+            uuid: user.uuid,
+            profileImage: user.profileImage
+        }
+        try{
+            dispatch({
+                type: LOGIN,
+                payload: userCredential
+            })
+        }
+        catch(err: any){
+            dispatch(loading(false));
         }
     }
 }
