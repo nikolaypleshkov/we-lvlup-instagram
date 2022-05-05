@@ -1,20 +1,15 @@
-import React, { Dispatch, useState, ReactEventHandler } from 'react';
-import { Global } from '@emotion/react';
-import { styled } from '@mui/material/styles';
-import CssBaseline from '@mui/material/CssBaseline';
-import { grey } from '@mui/material/colors';
-import Button from '@mui/material/Button';
-import Box from '@mui/material/Box';
-import Skeleton from '@mui/material/Skeleton';
-import Typography from '@mui/material/Typography';
-import SwipeableDrawer from '@mui/material/SwipeableDrawer';
-import MenuIcon from '@mui/icons-material/Menu';
-import useSwipeableDrawer from 'hooks/useSwipeableDrawer';
-import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
-import FolderSpecialOutlinedIcon from '@mui/icons-material/FolderSpecialOutlined';
-import GradeOutlinedIcon from '@mui/icons-material/GradeOutlined';
-import LogoutOutlinedIcon from '@mui/icons-material/LogoutOutlined';
-import { Link } from 'react-router-dom';
+import React, { Dispatch, useState, ReactEventHandler } from "react";
+import { Global } from "@emotion/react";
+import { styled } from "@mui/material/styles";
+import CssBaseline from "@mui/material/CssBaseline";
+import { grey } from "@mui/material/colors";
+import Button from "@mui/material/Button";
+import Box from "@mui/material/Box";
+import Typography from "@mui/material/Typography";
+import SwipeableDrawer from "@mui/material/SwipeableDrawer";
+import Drawer from "@mui/material/Drawer";
+import { Link } from "react-router-dom";
+import { useMediaQuery } from "@mui/material";
 
 const drawerBleeding = 56;
 
@@ -26,58 +21,35 @@ interface Props {
   window?: () => Window;
   openStauts: boolean;
   setOpenState: (open: boolean | ((prevVar: boolean) => boolean)) => void;
+  data: any;
+  menuHeader: string;
 }
 
-const Root = styled('div')(({ theme }) => ({
-  height: '100%',
-  backgroundColor:
-    theme.palette.mode === 'light' ? grey[100] : theme.palette.background.default,
+const Root = styled("div")(({ theme }) => ({
+  height: "100%",
+  backgroundColor: theme.palette.mode === "light" ? grey[100] : theme.palette.background.default
 }));
 
 const StyledBox = styled(Box)(({ theme }) => ({
-  backgroundColor: theme.palette.mode === 'light' ? '#ffffff' : grey[800],
+  backgroundColor: theme.palette.mode === "light" ? "#ffffff" : grey[800]
 }));
 
 const Puller = styled(Box)(({ theme }) => ({
   width: 30,
   height: 6,
-  backgroundColor: theme.palette.mode === 'light' ? grey[300] : grey[900],
+  backgroundColor: theme.palette.mode === "light" ? grey[300] : grey[900],
   borderRadius: 3,
-  position: 'absolute',
+  position: "absolute",
   top: 8,
-  left: 'calc(50% - 15px)',
+  left: "calc(50% - 15px)"
 }));
-
-const settings = [
-  {
-    path: "/settings",
-    label: "Settings",
-    icon: <SettingsOutlinedIcon />,
-  },
-  {
-    path: "/saved",
-    label: "Saved",
-    icon: <FolderSpecialOutlinedIcon />
-  },
-  {
-    path: "/favourites",
-    label: "Favourites",
-    icon: <GradeOutlinedIcon />
-  },
-  {
-    path: "/logout",
-    label: "Logout",
-    icon: <LogoutOutlinedIcon />
-  }
-]
 
 export default function SwipeableEdgeDrawer(props: Props) {
   const { window, openStauts, setOpenState } = props;
-  const [open, setOpen] = useState(openStauts);
-
-  const toggleSwiper = () =>{
+  const match = useMediaQuery("(max-width: 600px)");
+  const toggleSwiper = () => {
     setOpenState(false);
-  }
+  };
 
   // This is used only for the example
   const container = window !== undefined ? () => window().document.body : undefined;
@@ -87,14 +59,13 @@ export default function SwipeableEdgeDrawer(props: Props) {
       <CssBaseline />
       <Global
         styles={{
-          '.MuiDrawer-root > .MuiPaper-root': {
+          ".MuiDrawer-root > .MuiPaper-root": {
             height: `calc(50% - ${drawerBleeding}px)`,
-            overflow: 'visible',
-          },
+            overflow: "visible"
+          }
         }}
       />
-      <Box sx={{ textAlign: 'center', pt: 1 }}>
-      </Box>
+      <Box sx={{ textAlign: "center", pt: 1 }}></Box>
       <SwipeableDrawer
         container={container}
         anchor="bottom"
@@ -104,61 +75,58 @@ export default function SwipeableEdgeDrawer(props: Props) {
         swipeAreaWidth={drawerBleeding}
         disableSwipeToOpen={false}
         ModalProps={{
-          keepMounted: true,
-        }}
-      >
+          keepMounted: true
+        }}>
         <StyledBox
           sx={{
-            position: 'absolute',
+            position: "absolute",
             top: -drawerBleeding,
             borderTopLeftRadius: 8,
             borderTopRightRadius: 8,
-            visibility: 'visible',
+            visibility: "visible",
             right: 0,
-            left: 0,
-          }}
-        >
+            left: 0
+          }}>
           <Puller />
-          <Typography sx={{ p: 2, color: 'text.secondary' }}>Menu</Typography>
+          <Typography sx={{ p: 2, color: "text.secondary" }}>{props.menuHeader}</Typography>
         </StyledBox>
         <StyledBox
           sx={{
             px: 2,
             pb: 2,
-            height: '100%',
-            overflow: 'auto',
-          }}
-        >
-          <Box component="div" sx={{
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "center",
-            alignItems: "center",
-            width: "100%"
+            height: "100%",
+            overflow: "auto"
           }}>
-          {
-            settings.map((element, i) => (
-              <Button component={Link} to={element.path} key={i} sx={{
-                width: "100%",
-                textAlign: "center",
-                display: "flex",
-                justifyContent: "stretch",
-                color: "#000",
-                alignItems: "center"
-              }}>
-                <span>
-                  {element.icon}
-                </span> 
+          <Box
+            component="div"
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "center",
+              alignItems: "center",
+              width: "100%"
+            }}>
+            {props.data.map((element: any, i: any) => (
+              <Button
+                component={Link}
+                to={element.path}
+                key={i}
+                sx={{
+                  width: "100%",
+                  textAlign: "center",
+                  display: "flex",
+                  justifyContent: "stretch",
+                  color: "#000",
+                  alignItems: "center"
+                }}>
+                <span>{element.icon}</span>
                 &nbsp;
-                <span>
-                  {element.label}
-                </span>
-              </Button >
-            ))
-          }
+                <span>{element.label}</span>
+              </Button>
+            ))}
           </Box>
         </StyledBox>
       </SwipeableDrawer>
     </Root>
-  );
+  )
 }

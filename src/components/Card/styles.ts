@@ -8,7 +8,8 @@ export default makeStyles(() => ({
         flexGrow: 1,
         display: "flex",
         justifyContent: "center",
-        flexDirection: "column"
+        flexDirection: "column",
+        marginBottom: "10%"
     },
     cardActions: {
         display: "flex",

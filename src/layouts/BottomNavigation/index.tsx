@@ -10,10 +10,13 @@ import StorefrontIcon from '@mui/icons-material/Storefront';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import useStyles from "./styles";
 import { Link } from 'react-router-dom';
+import BookmarkAddedOutlinedIcon from '@mui/icons-material/BookmarkAddedOutlined';
+import { useMediaQuery } from '@mui/material';
 const BottomNav = () => {
     const [value, setValue] = React.useState(0);
     const classes = useStyles();
-  return (
+    const match = useMediaQuery("(max-width: 600px)");
+  return match ? (
       <Paper component="footer" sx={{ position: 'fixed', bottom: 0, left: 0, right: 0, zIndex: 1500 }} >
       <BottomNavigation
         showLabels
@@ -33,7 +36,7 @@ const BottomNav = () => {
         }}  />} to="/profile" />
       </BottomNavigation>
       </Paper>
-  )
+  ) : null
 }
 
 export default BottomNav;
