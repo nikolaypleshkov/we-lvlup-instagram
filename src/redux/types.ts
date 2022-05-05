@@ -1,5 +1,12 @@
+import { Timestamp } from "firebase/firestore";
+
 export const USER = "USER";
+export const POST = "POST";
+export const LIKE = "LIKE";
 export const LOGOUT = "LOGOUT";
+export const LOGIN = "LOGIN";
+export const AUTH_INIT = "AUTH_INIT";
+export const REGISTER = "REGISTER";
 export const LOADING = "LOADING";
 export const ERROR = "ERROR";
 export const SUCCESS = "SUCCESS";
@@ -16,31 +23,78 @@ export interface User{
     followingID: Array<string>;
     bio: string;
     uuid: string;
+    profileImage: string;
 }
+
 
 export interface AuthState {
     user: User | null;
     authenticated: boolean;
     loading: boolean;
+    initAuth: boolean;
     error: string;
     success: string;
 }
 
+export interface Post{
+    comments: number;
+    commentsId: Array<string>;
+    createdBy: User;
+    createdByUserId: string;
+    description: string;
+    likes: number;
+    likesId: Array<string>;
+    postImage: string;
+    timestamp: Timestamp;
+    uuid: string
+}
+
+export interface PostState{
+    user: User | null;
+    posts: Array<Post> | null;
+}
 
 export interface RegisterData{
     email: string;
     fullname: string;
     username: string;
     password: string;
-}
+}           
 
 export interface LoginData{
     email: string;
-    passsword: string;
+    password: string;
 }
 
 interface UserAction{
     type: typeof USER;
+    payload: User;
+}
+
+interface PostAction{
+    user: any;
+    type: typeof POST;
+    payload: Array<Post>;
+}
+
+interface LikeAction{
+    user: User;
+    type: typeof LIKE;
+    payload: Array<Post>;
+}
+
+interface FirstAuth{
+    type: typeof AUTH_INIT;
+    payload: User;
+}
+
+interface RegisterAction{
+    type: typeof REGISTER;
+    payload: User;
+}
+
+interface LoginAction{
+    type: typeof LOGIN;
     payload: User;
 }
 
@@ -63,4 +117,6 @@ interface SuccessAction{
     payload: string;
 }
 
-export type AuthAction = UserAction | LoadingAction | LogoutAction | ErrorAction | SuccessAction;
+
+export type AuthAction = UserAction | RegisterAction | FirstAuth | LoginAction | LoadingAction | LogoutAction | ErrorAction | SuccessAction;
+export type UserPostAction = PostAction | LikeAction;
