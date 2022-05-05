@@ -2,10 +2,12 @@ import React, {ChangeEvent, FormEvent, useState} from 'react';
 import { Button } from '@mui/material';
 import { app, db, storage } from 'service/firebaseSetup';
 import { getDownloadURL, ref, uploadBytes, uploadBytesResumable } from 'firebase/storage';
-import { addDoc, collection, FieldValue, Timestamp } from 'firebase/firestore';
-import { useSelector } from 'react-redux';
+import { addDoc, collection, doc, FieldValue, getDocs, query, Timestamp, updateDoc, where } from 'firebase/firestore';
+import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from 'redux/store';
 import LinearProgress from '@mui/material/LinearProgress';
+import {v4 as uuidv4} from 'uuid';
+import { profileConfig } from 'redux/actions/authActions';
 
 const ImageUploader = () => {
   const [description, setDescription] = useState("");
@@ -13,6 +15,7 @@ const ImageUploader = () => {
   const [image, setImage] = useState<File | null>(null);
   const [progress, setProgress] = useState(0);
   const {user} = useSelector((state: RootState) => state.auth);
+  const dispatch = useDispatch();
 
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
     const target = event.target as HTMLInputElement;
@@ -31,7 +34,11 @@ const ImageUploader = () => {
       console.log("Something went wrong", error);
     }, () => {
       getDownloadURL(uploadTask.snapshot.ref).then(async (url) => {
+        let postId: string = "";
         setImageUrl(url);
+        //TODO: Get Post Id
+        //TODO: Update user
+
         await addDoc(collection(db, "posts"), ({
           timestamp: Timestamp.now(),
           description: description,
@@ -42,7 +49,25 @@ const ImageUploader = () => {
           commentsID: 0,
           createdBy: user,
           createdByUserId: user?.uuid
-        }));
+        })).then(async (document) => {
+          postId = document.id
+          const postRef = doc(db, "posts", document.id);
+          await updateDoc(postRef, {
+            uuid: document.id
+          });
+        }).then(async() => {
+          const q = query(collection(db, "users"), where("uuid", "==", user?.uuid));
+          const querySnapshot = await getDocs(q);
+          const snapshot = querySnapshot.docs[0];
+          const posts: Array<string> = snapshot.data().posts;
+          const userRef = doc(db, "users", snapshot.id);
+          posts.push(postId);
+          await updateDoc(userRef, {
+            posts: posts
+          });
+        }).then(() => {
+          dispatch(profileConfig(user!));
+        })
         setProgress(0);
         setDescription("");
         setImage(null);
