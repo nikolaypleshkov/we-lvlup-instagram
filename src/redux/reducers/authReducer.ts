@@ -1,19 +1,37 @@
-import {AuthAction, AuthState, USER, LOGOUT, LOADING, SUCCESS, ERROR  } from "redux/types";
+import {AuthAction, AuthState, USER, LOGOUT, LOADING, SUCCESS, ERROR, REGISTER, LOGIN, AUTH_INIT  } from "redux/types";
 
 const initialState: AuthState = {
     user: null,
     authenticated: false,
     loading: false,
+    initAuth: false,
     error: "",
     success: ""
 }
 
 export default (state = initialState, action: AuthAction) => {
     switch(action.type){
-        case USER: {
+        case REGISTER: {
             return {
                 ...state,
                 user: action.payload,
+                initAuth: true,
+                authenticated: true
+            }
+        }
+        case LOGIN: {
+                return {
+                    ...state,
+                    user: action.payload,
+                    initAuth: false,
+                    authenticated: true
+                }
+        }
+        case AUTH_INIT: {
+            return {
+                ...state,
+                user: action.payload,
+                initAuth: false,
                 authenticated: true
             }
         }

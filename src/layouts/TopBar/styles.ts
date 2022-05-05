@@ -29,7 +29,7 @@ export default makeStyles((theme: Theme) => ({
         display: "flex",
         alignItems: "center",
         textDecoration: "none",
-        color: "white",
+        color: "#000 !important",
         fontSize: "20px",
         marginLeft: "5%",
         "&:hover": {

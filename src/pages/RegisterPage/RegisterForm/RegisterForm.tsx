@@ -17,6 +17,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "redux/store";
 import { signup, setError } from "redux/actions/authActions";
 import Message from "components/Message";
+import { Navigate, useLocation } from "react-router-dom";
+import UserSettingPage from "pages/UserSettingPage/UserSettingPage";
 interface IBox{
   src: BoxProps,
   className: string,
@@ -34,6 +36,7 @@ const schema = Joi.object({
 
 const RegisterForm = () => {
   const classes = useStyles();
+  const location = useLocation();
   const { register, handleSubmit, formState: { errors }, setError } = useForm<UserInterface>({
     resolver: joiResolver(schema),
   });
@@ -102,11 +105,9 @@ const RegisterForm = () => {
         </PrimaryButton>
       </FormControl>
     </form>
-    <FormControl className={classes.formControl}>
-      <Typography className={classes.terms}>
-        By signing up, you agree to our <strong>Terms</strong>. Learn how we collect, use and share your data in our <strong>Data Policy</strong>, and how we use cookies and similar technology in our <strong>Cookie Policy</strong>.
-      </Typography>
-    </FormControl>
+    <Box component="p" className={classes.mutedText}>
+      By signing up, you agree to our <strong>Terms</strong>. Learn how we collect, use and share your data in our <strong>Data Policy</strong>, and how we use cookies and similar technology in our <strong>Cookie Policy</strong>.
+    </Box>
     </>
   )
 }
