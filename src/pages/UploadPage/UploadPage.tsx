@@ -3,7 +3,7 @@ import React from 'react'
 
 const UploadPage = () => {
   return (
-      <div className="main">
+      <div>
           <ImageUploader />
       </div>
   )

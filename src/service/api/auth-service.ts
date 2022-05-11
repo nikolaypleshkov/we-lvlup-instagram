@@ -47,7 +47,7 @@ export async function signUpWithEmail(
         });
 }
 
-export async function updateUserProfile(id: string, profileImage: string, bio: string){
+export async function updateUserProfile(id: string, profileImage: string, bio: string, username?: string){
     const q = query(collection(db, "users"), where("uuid", "==", id));
     const querySnapshot = await getDocs(q);
     let user: DocumentData = [];
@@ -58,6 +58,7 @@ export async function updateUserProfile(id: string, profileImage: string, bio: s
     const docRef = doc(db, "users", docId);
     await updateDoc(docRef, {
         profileImage: profileImage,
+        username: username,
         bio: bio
     });
 }
