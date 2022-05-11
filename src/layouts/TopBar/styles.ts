@@ -7,7 +7,7 @@ export default makeStyles((theme: Theme) => ({
         flexGrow: 1
     },
     appbarRoot: {
-        background: "#fafafa !important",
+        background: theme.palette.mode == "dark" ? "" : "#fafafa !important",
     },
     logo: {
         flexGrow: "1",
@@ -29,7 +29,6 @@ export default makeStyles((theme: Theme) => ({
         display: "flex",
         alignItems: "center",
         textDecoration: "none",
-        color: "#000 !important",
         fontSize: "20px",
         marginLeft: "5%",
         "&:hover": {

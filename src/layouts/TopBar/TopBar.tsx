@@ -62,7 +62,10 @@ const settings = [
 
 const TopBar = (): JSX.Element => {
   const classes = useStyles();
+  const location = useLocation();
   const match = useMediaQuery("(max-width: 600px");
+  // const { user } = useSelector((state: RootState) => state.auth);
+  const { user } = useSelector((state: RootState) => state.posts);
   const [open, setOpen] = useState(false);
   const [menuHeader, setMenuHeader] = useState("");
   const [menuData, setMenuData] = useState([
@@ -87,7 +90,7 @@ const TopBar = (): JSX.Element => {
       icon: <LogoutOutlinedIcon />
     }
   ]);
-  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const openDropdown = Boolean(anchorEl);
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
@@ -95,16 +98,17 @@ const TopBar = (): JSX.Element => {
   const handleClose = () => {
     setAnchorEl(null);
   };
-  const { user } = useSelector((state: RootState) => state.auth);
+
   return (
     <div className={classes.root}>
       <AppBar position="fixed" className={classes.appbarRoot}>
         <Toolbar>
-          {location.pathname === "/profile" ? (
+          {location.pathname.toString().split("/").includes("profile") ? (
             <Box
-              component="h2"
+              component="h3"
               sx={{
-                color: "#000"
+                color: "#000",
+                whiteSpace: "nowrap"
               }}>
               {user?.username}
             </Box>
@@ -144,7 +148,7 @@ const TopBar = (): JSX.Element => {
             <Button className={classes.link}>
               <FavoriteBorderTwoToneIcon sx={{ color: "black" }} />
             </Button>
-            {location.pathname === "/profile" && match ?(
+            {location.pathname.toString().split("/").includes("profile") && match ?(
               <Button
                 className={classes.link}
                 onClick={() => {
@@ -197,13 +201,13 @@ const TopBar = (): JSX.Element => {
                   transformOrigin={{ horizontal: "right", vertical: "top" }}
                   anchorOrigin={{ horizontal: "right", vertical: "bottom" }}>
                   <Box sx={{display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "flex-start"}}>
-                  <Button href="/profile" >
+                  <Button component={Link} to={`/profile/${user?.uuid}`} >
                       <AccountCircleOutlinedIcon />&nbsp;Profile
                   </Button>
                   <Button >
                       <BookmarkAddedOutlinedIcon />&nbsp;Saved
                   </Button>
-                  <Button >
+                  <Button component={Link} to="/settings">
                       <SettingsOutlinedIcon />&nbsp;Settings
                   </Button>
                   </Box>

@@ -12,9 +12,9 @@ interface AvatarProps{
 const UserAvatar = (props: AvatarProps) => {
   const { src, username, size} = props;
   return src ? (
-    <Avatar sx={{ width: size ? size : 56 , height: size ? size : 56 }} src={src} />
+    <Avatar alt={username} sx={{ width: size ? size : 56 , height: size ? size : 56 }} src={src} />
   ) : (
-    <Avatar sx={{ width: size ? size : 56, height: size ? size : 56  }}> 
+    <Avatar alt={username} sx={{ width: size ? size : 56, height: size ? size : 56  }}> 
       {username?.charAt(0).toUpperCase()}
     </Avatar>
   )

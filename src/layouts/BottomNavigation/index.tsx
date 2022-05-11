@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import Box from "@mui/material/Box";
 import BottomNavigation from "@mui/material/BottomNavigation";
 import BottomNavigationAction from "@mui/material/BottomNavigationAction";
@@ -12,10 +12,18 @@ import useStyles from "./styles";
 import { Link } from 'react-router-dom';
 import BookmarkAddedOutlinedIcon from '@mui/icons-material/BookmarkAddedOutlined';
 import { useMediaQuery } from '@mui/material';
+import { useSelector } from 'react-redux';
+import { RootState } from 'redux/store';
 const BottomNav = () => {
+    const { authUser } = useSelector((state: RootState) => state.auth); 
     const [value, setValue] = React.useState(0);
     const classes = useStyles();
     const match = useMediaQuery("(max-width: 600px)");
+
+    useEffect(() => {
+      console.log(authUser?.uuid);
+      
+    })
   return match ? (
       <Paper component="footer" sx={{ position: 'fixed', bottom: 0, left: 0, right: 0, zIndex: 1500 }} >
       <BottomNavigation
@@ -33,7 +41,7 @@ const BottomNav = () => {
         <BottomNavigationAction icon={<StorefrontIcon />} />
         <BottomNavigationAction component={Link} icon={<AccountCircleIcon sx={{
           color: "#000"
-        }}  />} to="/profile" />
+        }}  />} to={`/profile/${authUser?.uuid}`} />
       </BottomNavigation>
       </Paper>
   ) : null
