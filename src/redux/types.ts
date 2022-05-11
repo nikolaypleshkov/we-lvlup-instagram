@@ -2,7 +2,9 @@ import { Timestamp } from "firebase/firestore";
 
 export const USER = "USER";
 export const POST = "POST";
+export const USER_POST = "USER_POST";
 export const LIKE = "LIKE";
+export const FOLLOW = "FOLLOW"
 export const LOGOUT = "LOGOUT";
 export const LOGIN = "LOGIN";
 export const AUTH_INIT = "AUTH_INIT";
@@ -10,6 +12,8 @@ export const REGISTER = "REGISTER";
 export const LOADING = "LOADING";
 export const ERROR = "ERROR";
 export const SUCCESS = "SUCCESS";
+export const LOCAL_USER = "LOCAL_USER";
+export const REMOVE_USER = "REMOVE_USER"
 
 export interface User{
     email: string;
@@ -28,7 +32,7 @@ export interface User{
 
 
 export interface AuthState {
-    user: User | null;
+    authUser: User | null;
     authenticated: boolean;
     loading: boolean;
     initAuth: boolean;
@@ -53,7 +57,12 @@ export interface PostState{
     user: User | null;
     posts: Array<Post> | null;
 }
-
+export interface LocalUser{
+    currentUser: User | null;
+    posts: Array<Post> | null;
+    followingUsers: User | null;
+    followedUsers: User | null;
+}
 export interface RegisterData{
     email: string;
     fullname: string;
@@ -66,21 +75,27 @@ export interface LoginData{
     password: string;
 }
 
-interface UserAction{
-    type: typeof USER;
-    payload: User;
-}
-
 interface PostAction{
-    user: any;
+    user: User;
     type: typeof POST;
     payload: Array<Post>;
+}
+
+interface FollowAction{
+    type: typeof FOLLOW;
+    payload: User
 }
 
 interface LikeAction{
     user: User;
     type: typeof LIKE;
     payload: Array<Post>;
+}
+
+interface UserWithIdAction{
+    type: typeof USER_POST;
+    payload: Array<Post>;
+    user: User;
 }
 
 interface FirstAuth{
@@ -93,8 +108,14 @@ interface RegisterAction{
     payload: User;
 }
 
+
 interface LoginAction{
     type: typeof LOGIN;
+    payload: User;
+}
+
+interface LocalUserAction{
+    type: typeof LOCAL_USER;
     payload: User;
 }
 
@@ -106,7 +127,9 @@ interface LoadingAction{
 interface LogoutAction{
     type: typeof LOGOUT;
 }
-
+interface RemoveUserAction{
+    type: typeof REMOVE_USER;
+}
 interface ErrorAction{
     type: typeof ERROR;
     payload: string;
@@ -118,5 +141,6 @@ interface SuccessAction{
 }
 
 
-export type AuthAction = UserAction | RegisterAction | FirstAuth | LoginAction | LoadingAction | LogoutAction | ErrorAction | SuccessAction;
-export type UserPostAction = PostAction | LikeAction;
+export type AuthAction =  RegisterAction | FirstAuth | LoginAction | FollowAction | LoadingAction | LogoutAction | ErrorAction | SuccessAction;
+export type UserPostAction = PostAction | LikeAction | UserWithIdAction;
+export type UserAction = LocalUserAction | RemoveUserAction;

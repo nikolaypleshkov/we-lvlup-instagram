@@ -1,7 +1,7 @@
-import {AuthAction, AuthState, USER, LOGOUT, LOADING, SUCCESS, ERROR, REGISTER, LOGIN, AUTH_INIT  } from "redux/types";
+import {AuthAction, AuthState, USER, LOGOUT, LOADING, SUCCESS, ERROR, REGISTER, LOGIN, AUTH_INIT, FOLLOW  } from "redux/types";
 
 const initialState: AuthState = {
-    user: null,
+    authUser: null,
     authenticated: false,
     loading: false,
     initAuth: false,
@@ -14,7 +14,7 @@ export default (state = initialState, action: AuthAction) => {
         case REGISTER: {
             return {
                 ...state,
-                user: action.payload,
+                authUser: action.payload,
                 initAuth: true,
                 authenticated: true
             }
@@ -22,7 +22,7 @@ export default (state = initialState, action: AuthAction) => {
         case LOGIN: {
                 return {
                     ...state,
-                    user: action.payload,
+                    authUser: action.payload,
                     initAuth: false,
                     authenticated: true
                 }
@@ -30,7 +30,7 @@ export default (state = initialState, action: AuthAction) => {
         case AUTH_INIT: {
             return {
                 ...state,
-                user: action.payload,
+                authUser: action.payload,
                 initAuth: false,
                 authenticated: true
             }
@@ -44,9 +44,15 @@ export default (state = initialState, action: AuthAction) => {
         case LOGOUT: {
             return {
                 ...state,
-                user: null,
+                authUser: null,
                 authenticated: false,
                 loading: false
+            }
+        }
+        case FOLLOW: {
+            return{
+                ...state,
+                authUser: action.payload,
             }
         }
         case ERROR: {

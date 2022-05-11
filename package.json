@@ -1,10 +1,11 @@
 {
   "name": "we-lvlup-instagram",
+  "side-effects": false,
   "version": "1.0.0",
   "description": "Instagran Clone - project 2 from Accedia internship",
   "scripts": {
     "start": "webpack serve --mode=development",
-    "build": "rm -rf dist && webpack --mode-production",
+    "build": "rm -rf dist && webpack serve --mode=production",
     "lint": "eslint .",
     "lint:fix": "eslint --fix",
     "format": "prettier --write './**/*.{js,jsx,ts,tsx,css,md,json}'"
@@ -87,6 +88,7 @@
     "@mui/icons-material": "^5.6.1",
     "@mui/material": "^5.6.1",
     "@mui/styles": "^5.6.1",
+    "@nandorojo/swr-firestore": "^0.16.0",
     "@redux-devtools/extension": "^3.2.2",
     "@reduxjs/toolkit": "^1.8.1",
     "@types/react-redux": "^7.1.24",
