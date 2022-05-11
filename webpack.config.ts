@@ -4,7 +4,7 @@ import HtmlWebpackPlugin from "html-webpack-plugin"
 import TerserPlugin from "terser-webpack-plugin";
 
 import "webpack-dev-server"
-const isDevelopment = true
+const isDevelopment = false;
 const config: Configuration = {
   mode: isDevelopment ? "development" : "production",
   devServer: {
@@ -25,6 +25,7 @@ const config: Configuration = {
       src: path.resolve(__dirname, "src")
     }
   },
+  performance: { hints: false },
   module: {
     rules: [
       {
@@ -33,7 +34,7 @@ const config: Configuration = {
         use: {
           loader: "babel-loader",
           options: {
-            cacheDirectory: true
+            cacheDirectory: true,
           }
         }
       },

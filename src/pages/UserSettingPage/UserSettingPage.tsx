@@ -19,7 +19,7 @@ import { updateUserProfile } from "service/api/auth-service";
 import { profileConfig } from "redux/actions/authActions";
 const UserSettingPage = () => {
   const classes = useStyles();
-  const { authenticated, initAuth, user } = useSelector((state: RootState) => state.auth);
+  const { authenticated, initAuth, authUser } = useSelector((state: RootState) => state.auth);
   const location = useLocation();
   const [images, setImages] = useState([]);
   const [imageProp, setImageProp] = useState({ image: "", index: 0 });
@@ -41,9 +41,9 @@ const UserSettingPage = () => {
 
   const handleSubmit = (e: React.FormEvent<HTMLInputElement>) => {
     e.preventDefault();
-    updateUserProfile(user?.uuid!, imageProp.image, bio)
+    updateUserProfile(authUser?.uuid!, imageProp.image, bio, authUser?.username)
       .then((res) => {
-        dispatch(profileConfig(user!));
+        dispatch(profileConfig(authUser?.uuid!));
         
       })
       .catch((err) => {
@@ -57,13 +57,7 @@ const UserSettingPage = () => {
         <Grid item className={classes.card}>
           <ImageUploading value={images} onChange={onChange} maxNumber={maxNumber}>
             {({
-              imageList,
               onImageUpload,
-              onImageRemoveAll,
-              onImageUpdate,
-              onImageRemove,
-              isDragging,
-              dragProps
             }) => (
               <CardBox>
                 <Box component="div" className={classes.cardLogoContainer}>
@@ -85,7 +79,7 @@ const UserSettingPage = () => {
                   <Typography variant="h6" className={classes.headerText}>
                     Welcome
                   </Typography>
-                  <Typography className={classes.headerText}>{user?.username}</Typography>
+                  <Typography className={classes.headerText}>{authUser?.username}</Typography>
                   <Button
                     sx={{
                       marginTop: ".5rem"
@@ -93,7 +87,7 @@ const UserSettingPage = () => {
                     onClick={onImageUpload}>
                     Click To Set Profile Picture
                   </Button>
-                  <UserAvatar username={user?.username} src={imageProp.image} />
+                  <UserAvatar username={authUser?.username} src={imageProp.image} />
                   <Box
                     component="form"
                     sx={{
