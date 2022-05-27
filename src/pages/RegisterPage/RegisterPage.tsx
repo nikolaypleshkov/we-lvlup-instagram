@@ -1,16 +1,22 @@
 import React from "react"
 import Box from "@mui/material/Box";
-import useStyles from "./styles";
+import useStyles from "./style";
 import Grid from "@mui/material/Grid";
 import Typography from "@mui/material/Typography";
-import RegisterForm from "pages/RegisterPage/RegisterForm/RegisterForm";
-import CardBox from "components/Card/CardBox";
+import RegisterForm from "./RegisterForm";
+import CardBox from "../../components/Card/CardBox";
 import Button from "@mui/material/Button";
-import { Link } from "react-router-dom";
-import Footer from "layouts/Footer/Footer";
+import { Link, Navigate, useLocation } from "react-router-dom";
+import { useSelector } from "react-redux";
+import { isAuth } from "../../redux/selectors/user";
 const RegisterPage = () => {
     const classes = useStyles();
-  return (
+    const authenticated = useSelector(isAuth);
+    const location = useLocation();
+  
+    return authenticated ? (
+      <Navigate to='/settings' replace state={{ from: location }} />
+    ) : (
     <Box component="main" className={classes.content}>
         <Grid container justifyContent='center' spacing={4} className={classes.gridContainer}>
             <Grid item className={classes.card}>
@@ -24,9 +30,8 @@ const RegisterPage = () => {
                 </CardBox>
             </Grid>
         </Grid>
-        <Footer />
     </Box>
   )
 }
 
-export default RegisterPage
+export default RegisterPage;
