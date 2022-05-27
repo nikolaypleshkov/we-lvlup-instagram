@@ -1,0 +1,19 @@
+
+.story-img{
+    height: 4rem;
+    width: 4rem;
+    border-radius: 50%;
+    padding: 1.25px;
+    border: 2px solid #f56565;
+    object-fit: contain;
+    cursor: pointer;
+    transition:all 200ms ease-in;
+    
+}
+
+.story-img:hover{
+
+    height: 4.2rem;
+    width: 4.2rem;
+    transition:all 200ms ease-in;
+}

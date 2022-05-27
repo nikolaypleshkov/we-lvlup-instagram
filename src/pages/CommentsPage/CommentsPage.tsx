@@ -1,87 +1,111 @@
 import {
+  addDoc,
   collection,
   collectionGroup,
   doc,
   DocumentData,
+  getDoc,
   getDocs,
+  onSnapshot,
+  orderBy,
   query,
+  serverTimestamp,
+  setDoc,
   updateDoc,
   where
 } from "firebase/firestore";
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, FormEvent } from "react";
 import { useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
-import { RootState } from "redux/store";
-import { db } from "service/firebaseSetup";
+import { db } from "../../service/firebaseSetup";
 import Button from "@mui/material/Button";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Card from "@mui/material/Card";
-import CardActions from "@mui/material/CardActions";
 import CardContent from "@mui/material/CardContent";
-import CardHeader from "@mui/material/CardHeader";
-import CardMedia from "@mui/material/CardMedia";
-import UserAvatar from "components/Avatar/UserAvatar";
+import UserAvatar from "../../components/UserAvatart/UserAvatart";
 import { Divider, InputAdornment, InputBase, TextareaAutosize } from "@mui/material";
-import TextField from "@mui/material/TextField";
 import CommentsList from "./CommentsList";
+import { userSelector } from "../../redux/selectors/user";
 const CommentsPage = () => {
   const { id } = useParams();
-  const { authUser } = useSelector((state: RootState) => state.auth);
-  const { posts } = useSelector((state: RootState) => state.posts);
+  const authUser  = useSelector(userSelector);
   const [post, setPost] = useState<DocumentData>();
   const [comments, setComments] = useState<Array<DocumentData>>([]);
   const [comment, setComment] = useState<string>("");
-  const [userComments, setUserComments] = useState<Array<DocumentData>>([]);
+  const [user, setUser] = useState<DocumentData>();
+  const [replies, setReplies] = useState<Array<DocumentData>>([]);
+  const [isReply, setIsReply] = useState<boolean>(false);
+  const [postId, setPostId] = useState<string>("");
+  const [commentId, setCommentId] = useState<string>("");
   const inputRef = useRef(null);
-  const isInitMount = useRef(true);
   const navigate = useNavigate();
 
-  const getPost = async () => {
-    const q = query(collection(db, "posts"), where("uuid", "==", id));
-    await getDocs(q)
-      .then((doc) => {
-        const data = doc.docs[0].data();
-        setComments(data.comments);
-        setPost(data);
-        return data.comments;
-      })
-      .catch((err) => {
-        alert("Something went wrong " + err);
+  const commentPost = async (e: FormEvent) => {
+    e.preventDefault();
+    if (isReply) {
+      const replyToPush = [
+        ...replies,
+        {
+          createdBy: authUser?.uuid,
+          reply: comment
+        }
+      ];
+      console.log(replyToPush);
+      
+      updateDoc(doc(db, "posts", postId, "comments", commentId!), {
+        replies: replyToPush
       });
-  };
 
-  const commentPost = async () => {
-    if (comments.length > 0) {
-      setComments((prevState) => [
-        ...prevState,
-        { comment: comment, createdBy: authUser?.uuid, likes: [] }
-      ]);
+      setIsReply(false);
+      setComment("");
     } else {
-      setComments((prevState) => [{ comment: comment, createdBy: authUser?.uuid, likes: [] }]);
-    }
-    isInitMount.current = false;
-  };
+      const commentToSend = comment;
+      setComment("");
 
-  const updatePost = async () => {
-    const docRef = doc(db, "posts", id!);
-    await updateDoc(docRef, { comments: comments })
-      .then((res) => setComment(""))
-      .catch((err) => {
-        console.log(err);
+      await addDoc(collection(db, "posts", id!, "comments"), {
+        comment: commentToSend,
+        createdByUserId: authUser?.uuid,
+        replies: [],
+        likesID: [],
+        timestamp: serverTimestamp()
       });
+    }
   };
 
   useEffect(() => {
-    getPost();
+    onSnapshot(
+      query(collection(db, "posts", id!, "comments"), orderBy("timestamp", "desc")),
+      (snapshot) => {
+        setComments(snapshot.docs);
+      }
+    );
+  }, [db]);
+
+  useEffect(() => {
+    fetchPosts(id!);
   }, []);
 
-  useEffect(() => {
-    if (!isInitMount.current) {
-      updatePost();
-      setComment("")
-    }
-  }, [comments]);
+  const getUserInfo = async (id: string) => {
+    const qry = query(collection(db, "users"), where("uuid", "==", id));
+    const querySnapshot = await getDocs(qry);
+
+    querySnapshot.forEach((doc) => {
+      setUser(doc.data());
+    });
+  };
+
+  const fetchPosts = async (id: string) => {
+    const q = query(collection(db, "posts"), where("uuid", "==", id));
+    const fetchedPosts: Array<DocumentData> = [];
+    await getDocs(q).then((document) => {
+      document.forEach((doc) => {
+        fetchedPosts.push(doc.data());
+      });
+    });
+    setPost(fetchedPosts[0]);
+    getUserInfo(fetchedPosts[0].createdByUserId);
+  };
 
   return (
     <div>
@@ -109,18 +133,14 @@ const CommentsPage = () => {
                 alignItems: "center",
                 marginBottom: "5%"
               }}>
-              <UserAvatar
-                size={30}
-                src={post?.createdBy.profileImage}
-                username={post?.createdBy.username}
-              />
+              <UserAvatar size={30} src={user?.profileImage} username={user?.username} />
               <Typography
                 variant="body2"
                 color="text.secondary"
                 sx={{
                   marginLeft: "1.2rem"
                 }}>
-                <strong>{post?.createdBy.username}</strong> {post?.description}
+                <strong>{user?.username}</strong> {post?.description}
               </Typography>
             </Box>
             <Divider />
@@ -129,7 +149,22 @@ const CommentsPage = () => {
                 marginBottom: post?.comments < 0 ? "6.4rem" : null
               }}>
               {comments.length > 0
-                ? comments?.map((doc, i) => <CommentsList comments={doc} key={i} />)
+                ? comments?.map((doc, i) => (
+                    <CommentsList
+                      setPostId={setPostId}
+                      setCommentId={setCommentId}
+                      setReplies={setReplies}
+                      replies={replies}
+                      isReply={isReply}
+                      setIsReply={setIsReply}
+                      commentInput={comment}
+                      setCommentInput={setComment}
+                      comment={doc}
+                      userId={doc.data().createdByUserId}
+                      postId={id!}
+                      key={doc.id}
+                    />
+                  ))
                 : "No comments yet"}
             </Box>
           </CardContent>
@@ -160,7 +195,9 @@ const CommentsPage = () => {
             value={comment}
             onChange={(e) => setComment(e.target.value)}
           />
-          <Button onClick={commentPost}>Post</Button>
+          <Button type="submit" disabled={!comment.trim()} onClick={commentPost}>
+            Post
+          </Button>
         </Box>
       </Box>
     </div>

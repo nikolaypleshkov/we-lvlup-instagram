@@ -1,11 +1,12 @@
-import ImageUploader from 'components/ImageUploader/ImageUploader'
 import React from 'react'
+import ImageUploader from '../../components/ImageUploader/ImageUploader'
+import Layout from '../../layout/Layout'
 
 const UploadPage = () => {
   return (
-      <div>
+      <Layout title="Upload Post">
           <ImageUploader />
-      </div>
+      </Layout>
   )
 }
 
