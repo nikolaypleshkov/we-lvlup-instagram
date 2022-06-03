@@ -7,10 +7,8 @@ const style = {
     left: '50%',
     transform: 'translate(-50%, -50%)',
     width: 800,
-    bgcolor: 'background.paper',
-    border: '1px solid #000',
-    boxShadow: 24,
-    p: 4,
+    bgcolor: 'transparent',
+    zIndex: 1500
   };
 
   interface CameraModalInterface {
@@ -25,7 +23,7 @@ const CameraModal = (props: CameraModalInterface) => {
     open={open}
     onClose={() => handleOpen(false)}
     aria-labelledby="modal-modal-title"
-    aria-describedby="modal-modal-description">
+    aria-describedby="modal-modal-description"sx={{zIndex: 1500}}>
     <Box sx={style}>
         <ImageCapture />
     </Box>

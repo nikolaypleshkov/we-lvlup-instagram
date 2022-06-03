@@ -1,5 +1,5 @@
 
-import { query, collection, where, getDocs, updateDoc, doc} from "firebase/firestore";
+import { query, collection, where, getDocs, updateDoc, doc, setDoc, Timestamp, limit, orderBy, DocumentData, startAt, startAfter} from "firebase/firestore";
 import { updateUser, User } from "../redux/feature/userSlice";
 import { db, } from "./firebaseSetup";
 
@@ -21,7 +21,15 @@ export const followUser = async(authUser: User, id: string) => {
    await updateDoc(docRef1, {
          followersID: newFollowing1,
          followers: newFollowing1?.length
-     });
+     }).then(async() => {
+
+        await setDoc( doc(db, 'users', id!, 'notifications', authUser?.uuid!),{
+            type: 'follow',
+            user: authUser?.uuid,
+            post: "",
+            createdAt: Timestamp.now(),
+          }) 
+     })
 }
 
 export const unfollowUser = async(authUser: User, id: string) => {
@@ -43,4 +51,43 @@ export const unfollowUser = async(authUser: User, id: string) => {
           followersID: newFollowing1,
           followers: newFollowing1?.length
       });
+}
+
+export async function getPostsFirstBarch(){
+  try{
+
+    const qry = query(collection(db, "posts"))
+    const querySnapshot = await getDocs(qry);
+    let posts: DocumentData[] = [];
+    let lastPostKey = "";
+    querySnapshot.forEach((doc) => {
+      posts.push(doc.data());
+      lastPostKey = doc.data().uuid;
+    });
+
+    return {posts, lastPostKey};
+  }
+  catch(err){
+    console.error(err);
+    
+  }
+}
+
+export async function getPostsNextBatch(key?: string){
+  try{
+    const qry =  query(collection(db, "posts"), orderBy("timestamp", "desc"), orderBy("uuid"),startAfter(key), limit(2));
+    const querySnapshot = await getDocs(qry);
+    let posts: DocumentData[] = [];
+    let lastPostKey = "";
+    querySnapshot.forEach((doc) => {
+      posts.push(doc.data());
+      lastPostKey = doc.data().uuid;
+    });
+
+    return {posts, lastPostKey};
+  }
+  catch(err){
+    console.error(err);
+    
+  }
 }

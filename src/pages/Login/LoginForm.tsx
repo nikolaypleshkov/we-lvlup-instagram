@@ -34,11 +34,16 @@ const LoginForm = () => {
 
   function formSubmit(e: FormEvent): void{
     e.preventDefault();
+    setLoading(true);
     const userData = {
         email: email,
         password: password,
     }
-    dispatch(login(userData));
+    dispatch(login(userData)).then(() => {
+      setLoading(false);
+    }).catch((err) => {
+      setLoading(false);
+    });
 }
 
 const logWithGoogle = async() => {
@@ -51,7 +56,7 @@ const logWithGoogle = async() => {
         <img src={logo} className={classes.cardLogo} alt="instagram-logo"/>
       </Box>
       <form className={classes.form} onSubmit={(e) => formSubmit(e)}>
-        {/* { error && <Message type="danger" message="Wrong email or password" />} */}
+        { error.length > 1 &&  <Message type="danger" message={error}/> }
         <FormControl className={classes.formControl}>
           <TextField size="small" id="outlined-email-input" variant="outlined" placeholder="Email" type="email" className={classes.textInput} onChange={(e) => setEmail(e.target.value)} />
         </FormControl>

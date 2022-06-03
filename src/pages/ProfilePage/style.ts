@@ -22,14 +22,18 @@ export default makeStyles((theme: Theme) => {
         marginTop: 55
       },
       followingSection: {
-        [theme.breakpoints.up("sm")]: {
-          ...followingSectionLarge
+        [theme.breakpoints.down("sm")]: {
+          // ...followingSectionLarge
+
+        display: "flex",
+        justifyContent: "space-between"
         },
         [theme.breakpoints.down("xs")]: {
-          display: "grid",
-          gridAutoFlow: "column",
+          display: "grid !important",
+          gridAutoFlow: "row",
           padding: "10px 0"
-        }
+        },
+        ...followingSectionLarge
       },
       followingText: {
         [theme.breakpoints.up("sm")]: {
@@ -49,7 +53,6 @@ export default makeStyles((theme: Theme) => {
       cardLarge: {
         background: "transparent !important",
         border: "unset !important",
-        display: "grid",
         gridAutoFlow: "column",
         gridTemplateColumns: "minmax(auto, 290px) minmax(auto, 645px)"
       },
@@ -89,7 +92,7 @@ export default makeStyles((theme: Theme) => {
         alignItems: "center"
       },
       username: {
-        fontSize: "28px !important",
+        fontSize: "20px !important",
         fontWeight: "300 !important"
       },
       button: {
@@ -101,6 +104,7 @@ export default makeStyles((theme: Theme) => {
         width: 30
       },
       settingsWrapper: {
+        padding: 15,
         "&:hover": {
           cursor: "pointer"
         }

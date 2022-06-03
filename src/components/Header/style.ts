@@ -23,7 +23,7 @@ export default  makeStyles((theme: Theme) => ({
     logoContainer: {
       display: "flex",
       flex: "1 9999 0%",
-      minWidth: 40
+      minWidth: 50
     },
     logoWrapper: {
       flex: "0 0 auto",

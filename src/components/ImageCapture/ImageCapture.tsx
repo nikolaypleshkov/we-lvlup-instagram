@@ -26,13 +26,18 @@ const ImageCapture = () => {
     }}>
           <Webcam
             audio={false}
-            height={250}
+            height={450}
             width="100%"
             ref={webcamRef}
             screenshotFormat="image/webp"
-            videoConstraints={{ height: 250, width: 400, facingMode: "user" }}
+            videoConstraints={{ height: 450, width: 900, facingMode: "user" }}
           />
-          <RadioButtonUncheckedIcon onClick={capture} fontSize="large" />
+          <RadioButtonUncheckedIcon onClick={capture} fontSize="large" sx={{
+            position: "absolute",
+            bottom: 30,
+            fill: "#fff",
+            fontSize: 55
+          }} />
     </div>
   );
 };

@@ -23,7 +23,10 @@ export default makeStyles((theme: Theme) => ({
       display: "flex",
       margin: "0 auto",
       flexFlow: "row nowrap",
-      maxWidth: "935px !important"
+      [theme.breakpoints.down("sm")]: {
+        margin: "0 0"
+      }
+      // minWidth: "935px !important"
     },
     children: {
       width: "100%"

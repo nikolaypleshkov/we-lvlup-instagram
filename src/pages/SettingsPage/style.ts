@@ -16,7 +16,6 @@ const sectionItem = {
     justifySelf: "start"
   };
   const form = {
-    display: "grid"
   };
   
   export default makeStyles((theme: Theme) => ({
@@ -84,10 +83,7 @@ const sectionItem = {
       typography,
       justifySelfStart,
       sectionItemWrapper: {
-        ...sectionItem,
-        [theme.breakpoints.down("xs")]: {
-          display: "unset"
-        }
+        marginBottom: 15
       },
       textFieldInput: {
         padding: "10px !important"
@@ -96,12 +92,15 @@ const sectionItem = {
         alignSelf: "center"
       },
       pictureSectionItem: {
-        ...sectionItem,
-        placeItems: "center end",
-        [theme.breakpoints.down("xs")]: {
-          gridGap: 20,
-          gridTemplateColumns: "minmax(auto, 38px) minmax(auto, 340px)"
-        }
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "flex-start",
+        marginTop: 45,
+        // placeItems: "center end",
+        // [theme.breakpoints.down("xs")]: {
+        //   gridGap: 20,
+        //   gridTemplateColumns: "minmax(auto, 38px) minmax(auto, 340px)"
+        // }
       },
       typographyChangePic: {
         "&:hover": {
