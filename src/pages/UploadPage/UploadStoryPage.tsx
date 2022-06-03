@@ -1,8 +1,7 @@
-
-import Layout from '../../layout/Layout'
+import Layout from "../../layout/Layout";
 import { Button, Box, Typography, Grid } from "@mui/material";
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import "tui-image-editor/dist/tui-image-editor.css";
 import TuiImageEditor from "tui-image-editor";
 import ImageCapture from "../../components/ImageCapture/ImageCapture";
@@ -20,10 +19,13 @@ const UploadStoryPage = () => {
         sx={{
           marginTop: "10%"
         }}>
-        <Typography variant="h4" mb={5} sx={{
-          width: "100%",
-          textAlign: "center"
-        }}>
+        <Typography
+          variant="h4"
+          mb={5}
+          sx={{
+            width: "100%",
+            textAlign: "center"
+          }}>
           Upload Story
         </Typography>
       </Box>
@@ -31,12 +33,14 @@ const UploadStoryPage = () => {
         <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
           <Grid item xs={6}>
             <Box
+              component={Link}
+              to={"/upload/fromDevice"}
               sx={{
                 display: "flex",
                 flexDirection: "column",
                 alignItems: "center"
               }}>
-              <Typography variant="h4">Choose from device</Typography>
+              <Typography variant="body1">Choose from device</Typography>
               <Button>
                 <CollectionsIcon fontSize="large" />
               </Button>
@@ -49,7 +53,7 @@ const UploadStoryPage = () => {
                 flexDirection: "column",
                 alignItems: "center"
               }}>
-              <Typography variant="h4">Take from camera</Typography>
+              <Typography variant="body1">Take from camera</Typography>
               <Button onClick={() => setFromCamera(true)}>
                 <CameraAltIcon fontSize="large" />
               </Button>

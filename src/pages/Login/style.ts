@@ -67,7 +67,7 @@ import { makeStyles } from "@mui/styles";
         maxWidth: "100%",
         display: "flex",
         justifyContent: "center",
-        marginTop: "15px"
+        marginTop: "15px",
     },
     cardLogo: {
         objectFit: "contain",

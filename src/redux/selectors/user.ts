@@ -15,5 +15,5 @@ export const isAuth = createSelector(authSelector, (auth) => {
 });
 
 export const errorSelector = createSelector(authSelector, (auth) => {
-  return auth.error;
+  return auth.error
 });

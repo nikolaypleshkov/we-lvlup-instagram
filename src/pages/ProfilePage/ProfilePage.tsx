@@ -10,30 +10,37 @@ import {
   DialogTitle,
   Divider,
   Hidden,
+  Modal,
   Typography,
-  Zoom,
-} from '@mui/material';
+  Zoom
+} from "@mui/material";
 import {
   collection,
+  doc,
   DocumentData,
   getDocs,
   onSnapshot,
   query,
-  where,
-} from 'firebase/firestore';
-import React, { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { Link, Navigate, useLocation, useParams } from 'react-router-dom';
-import Layout from '../../layout/Layout';
-import { isAuth, userSelector } from '../../redux/selectors/user';
-import useStyles from './style';
-import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
-import { updateUser, User } from '../../redux/feature/userSlice';
-import UserAvatar from '../../components/UserAvatart/UserAvatart';
-import Profile from '../../components/Profile/Profile';
-import { db } from '../../service/firebaseSetup';
-import { followUser, unfollowUser } from '../../service/api';
-import { AppDispatch } from '../../redux/store';
+  setDoc,
+  Timestamp,
+  where
+} from "firebase/firestore";
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { Link, Navigate, useLocation, useParams } from "react-router-dom";
+import Layout from "../../layout/Layout";
+import { isAuth, userSelector } from "../../redux/selectors/user";
+import useStyles from "./style";
+import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined";
+import { updateUser, User } from "../../redux/feature/userSlice";
+import UserAvatar from "../../components/UserAvatart/UserAvatart";
+import Profile from "../../components/Profile/Profile";
+import { db } from "../../service/firebaseSetup";
+import { followUser, unfollowUser } from "../../service/api";
+import { AppDispatch } from "../../redux/store";
+import Stories from 'react-insta-stories'
+import { makeStyles } from "@mui/styles";
+
 const ProfilePage = () => {
   const { id } = useParams();
   const authUser = useSelector(userSelector);
@@ -53,21 +60,21 @@ const ProfilePage = () => {
     setShowMenu(false);
   };
   const getUserInfo = async (userId: string) => {
-    const q = query(collection(db, 'users'), where('uuid', '==', userId));
+    const q = query(collection(db, "users"), where("uuid", "==", userId));
     await getDocs(q)
       .then((doc) => {
         setUser(doc.docs[0].data());
         setLoading(false);
       })
       .catch((err) => {
-        alert('Something went wrong: ' + err);
+        alert("Something went wrong: " + err);
       });
   };
 
   useEffect(() => {
     setIsOwner(authUser?.uuid === id);
     const unsubscribe = onSnapshot(
-      query(collection(db, 'users'), where('uuid', '==', id)),
+      query(collection(db, "users"), where("uuid", "==", id)),
       (doc) => {
         setUser(doc.docs[0].data());
         setLoading(false);
@@ -77,13 +84,19 @@ const ProfilePage = () => {
     return () => {
       unsubscribe();
     };
-    // alert(id)
   }, [db, id]);
   return authenticated ? (
-    <Layout title='Profile'>
+    <Layout title="Profile">
       <div className={classes.container}>
         {loading ? (
+          <Box sx={{
+            display: "grid",
+            placeItems: "center",
+            height: "100%"
+          }}>
+
           <CircularProgress />
+          </Box>
         ) : (
           <>
             <Hidden xsDown>
@@ -107,15 +120,42 @@ const ProfilePage = () => {
       </div>
     </Layout>
   ) : (
-    <Navigate to='/login' replace state={{ from: location }} />
+    <Navigate to="/login" replace state={{ from: location }} />
   );
 };
+
+const style = {
+  position: 'absolute',
+  top: '50%',
+  left: '50%',
+  transform: 'translate(-50%, -50%)',
+  bgcolor: 'transparent',
+  border: "0px !important"
+};
+
+const useModalStyles = makeStyles(() => ({
+  gridList: {
+    flexWrap: "nowrap",
+    transform: "translateZ(0)"
+  },
+  modal: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    "&:hover": {
+      backgroundcolor: "red"
+    }
+  },
+  img: {
+    outline: "none"
+  }
+}));
 
 function ProfileNameSection({
   user,
   isOwner,
   authUser,
-  handleOptionsMenuClick,
+  handleOptionsMenuClick
 }: {
   user: User | DocumentData;
   isOwner: boolean;
@@ -123,14 +163,17 @@ function ProfileNameSection({
   handleOptionsMenuClick: () => void;
 }) {
   const classes = useStyles();
+  const modalClasses = useModalStyles();
   // const authUser = useSelector(userSelector);
   const dispatch: AppDispatch = useDispatch();
   const [showUnfollowDialog, setUnfollowDialog] = React.useState(false);
-  const [isFollowing, setIsFollowing] = useState(() =>
-    authUser?.followingID.includes(user?.uuid)
-  );
+  const [isFollowing, setIsFollowing] = useState(() => authUser?.followingID.includes(user?.uuid));
+  const [stories, setStories] = useState<any[]>([]);
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [open, setOpen] = useState(false);
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
   let followButton;
-
   const isFollower = user.followingID.includes(authUser?.uuid);
   const handleFollow = async () => {
     if (isFollowing) {
@@ -143,88 +186,87 @@ function ProfileNameSection({
         .then(() => {
           dispatch(updateUser(authUser?.uuid!));
         })
-        .catch((err) => alert('Something went wrong: ' + err));
+        .catch((err) => alert("Something went wrong: " + err));
     } else {
       const newFollowing: string[] = [authUser?.followingID, user.uuid];
       setIsFollowing(() => newFollowing.includes(user?.uuid));
       followUser(authUser!, user?.uuid!)
+        .then(async () => {
+          await setDoc(doc(db, "users", user?.uuid!, "notifications", authUser?.uuid!), {
+            type: "follow",
+            user: authUser?.uuid,
+            post: "",
+            createdAt: Timestamp.now()
+          });
+        })
         .then(() => {
           dispatch(updateUser(authUser?.uuid!));
         })
-        .catch((err) => alert('Something went wrong: ' + err));
+        .catch((err) => alert("Something went wrong: " + err));
     }
   };
   if (isFollowing) {
     followButton = (
-      <Button onClick={() => setUnfollowDialog(true)} variant='outlined'>
+      <Button onClick={() => setUnfollowDialog(true)} variant="outlined">
         Following
       </Button>
     );
   } else if (isFollower) {
     followButton = (
-      <Button
-        variant='contained'
-        color='primary'
-        className={classes.button}
-        onClick={handleFollow}
-      >
+      <Button variant="contained" color="primary" className={classes.button} onClick={handleFollow}>
         Follow Back
       </Button>
     );
   } else {
     followButton = (
-      <Button
-        variant='contained'
-        color='primary'
-        className={classes.button}
-        onClick={handleFollow}
-      >
+      <Button variant="contained" color="primary" className={classes.button} onClick={handleFollow}>
         Follow
       </Button>
     );
   }
+
+  useEffect(() => {
+    const unsub = onSnapshot(query(collection(db, "users", user.uuid, "stories")), (snapshot) => {
+      const storiesImage: string[] = [];
+      snapshot.docs.forEach((story: DocumentData) => {
+        storiesImage.push(story.data().storyImage);
+      });
+      setStories(storiesImage);
+    });
+
+    return () => {
+      unsub();
+    }
+  }, [])
   return (
     <>
       <Hidden xsDown>
         <section className={classes.usernameSection}>
-          <Typography className={classes.username}>{user.username}</Typography>
           {isOwner ? (
             <>
-              <UserAvatar
-                size={77}
-                username={user.username}
-                src={user.profileImage}
-              />
-
-              <div
-                onClick={handleOptionsMenuClick}
-                className={classes.settingsWrapper}
-              >
-                <SettingsOutlinedIcon className={classes.settings} />
-              </div>
+            <Button onClick={handleOpen}>
+              <UserAvatar size={77} username={user.username} src={user.profileImage} border={stories?.length > 0 ? "#f56565" : ""} />
+            </Button>
+              <Typography className={classes.username}>{user.username}</Typography>
             </>
           ) : (
             <>
-              <UserAvatar
-                size={77}
-                username={user.username}
-                src={user.profileImage}
-              />
+              <UserAvatar size={77} username={user.username} src={user.profileImage} />
+              <Typography className={classes.username}>{user.username}</Typography>
               <div className={classes.settingsWrapper}>{followButton}</div>
             </>
           )}
         </section>
+        
       </Hidden>
       <Hidden smUp>
         <section>
-          {isOwner ? (
-            <Link to='/accounts/edit'>
-              <Button variant='outlined' style={{ width: '100%' }}>
+          {isOwner && (
+            <Link to="/settings">
+              <Button variant="outlined" style={{ width: "100%" }}>
                 Edit Profile
               </Button>
             </Link>
-          ) : (
-            followButton
           )}
         </section>
       </Hidden>
@@ -235,6 +277,24 @@ function ProfileNameSection({
           handleFollow={handleFollow}
         />
       )}
+      <Modal
+        open={open}
+        onClose={handleClose}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description" sx={{border: "0px !important"}}>
+        <Box sx={modalClasses}>
+        <Stories 
+        stories={stories}
+        defaultInterval={1500}
+        width={432}
+        height={668}
+        keyboardNavigation={true}
+        currentIndex={currentIndex}
+        onStoryEnd={() => setCurrentIndex((prev) => prev + 1)}
+        onAllStoriesEnd={() => setOpen(false)}
+      />
+        </Box>
+      </Modal>
     </>
   );
 }
@@ -242,7 +302,7 @@ function ProfileNameSection({
 function UnfollowDialog({
   onClose,
   user,
-  handleFollow,
+  handleFollow
 }: {
   onClose: () => void;
   user: User | DocumentData;
@@ -254,11 +314,10 @@ function UnfollowDialog({
     <Dialog
       open
       classes={{
-        scrollPaper: classes.unfollowDialogScrollPaper,
+        scrollPaper: classes.unfollowDialogScrollPaper
       }}
       onClose={onClose}
-      TransitionComponent={Zoom}
-    >
+      TransitionComponent={Zoom}>
       <div className={classes.wrapper}>
         <Avatar
           src={user.profileImage}
@@ -266,11 +325,7 @@ function UnfollowDialog({
           className={classes.avatar}
         />
       </div>
-      <Typography
-        align='center'
-        variant='body2'
-        className={classes.unfollowDialogText}
-      >
+      <Typography align="center" variant="body2" className={classes.unfollowDialogText}>
         Unfollow @{user.username}?
       </Typography>
       <Divider />
@@ -279,8 +334,7 @@ function UnfollowDialog({
         onClick={() => {
           handleFollow();
           onClose();
-        }}
-      >
+        }}>
         Unfollow
       </Button>
       <Divider />
@@ -293,8 +347,6 @@ function UnfollowDialog({
 
 function PostCountSection({ user }: { user: User | DocumentData }) {
   const classes = useStyles();
-  const options = ['posts', 'followersID', 'followingID'];
-
   return (
     <>
       <Hidden smUp>
@@ -302,29 +354,19 @@ function PostCountSection({ user }: { user: User | DocumentData }) {
       </Hidden>
       <section className={classes.followingSection}>
         <Box className={classes.followingText}>
-          <Typography className={classes.followingCount}>
-            {user?.posts.length}
-          </Typography>
+          <Typography className={classes.followingCount}>{user?.posts.length}</Typography>
           <Hidden xsDown>
             <Typography>Posts</Typography>
           </Hidden>
         </Box>
-        <Box className={classes.followingText}>
-          <Typography className={classes.followingCount}>
-            {user?.followersID.length}
-          </Typography>
+        <Box className={classes.followingText} component={Link} to={`/followers/${user.uuid}`}>
+          <Typography className={classes.followingCount}>{user?.followersID.length}</Typography>
           <Hidden xsDown>
             <Typography>Followers</Typography>
           </Hidden>
         </Box>
-        <Box
-          className={classes.followingText}
-          component={Link}
-          to={`/following/${user.uuid}`}
-        >
-          <Typography className={classes.followingCount}>
-            {user?.followingID.length}
-          </Typography>
+        <Box className={classes.followingText} component={Link} to={`/following/${user.uuid}`}>
+          <Typography className={classes.followingCount}>{user?.followingID.length}</Typography>
           <Hidden xsDown>
             <Typography>Following</Typography>
           </Hidden>
@@ -361,42 +403,35 @@ function OptionsMenu({ handleCloseMenu }: { handleCloseMenu: () => void }) {
       open
       classes={{
         scrollPaper: classes.dialogScrollPaper,
-        paper: classes.dialogPaper,
+        paper: classes.dialogPaper
       }}
-      TransitionComponent={Zoom}
-    >
+      TransitionComponent={Zoom}>
       {showLogOutMessage ? (
         <DialogTitle className={classes.dialogTitle}>
           Logging Out
-          <Typography color='textSecondary'>
+          <Typography color="textSecondary">
             You need to log back in to continue using Instagram.
           </Typography>
         </DialogTitle>
       ) : (
         <>
-          <OptionsItem text='Change Password' />
-          <OptionsItem text='Nametag' />
-          <OptionsItem text='Authorized Apps' />
-          <OptionsItem text='Notifications' />
-          <OptionsItem text='Privacy and Security' />
-          <OptionsItem text='Log Out' onClick={handleLogOutClick} />
-          <OptionsItem text='Cancel' onClick={handleCloseMenu} />
+          <OptionsItem text="Change Password" />
+          <OptionsItem text="Nametag" />
+          <OptionsItem text="Authorized Apps" />
+          <OptionsItem text="Notifications" />
+          <OptionsItem text="Privacy and Security" />
+          <OptionsItem text="Log Out" onClick={handleLogOutClick} />
+          <OptionsItem text="Cancel" onClick={handleCloseMenu} />
         </>
       )}
     </Dialog>
   );
 }
 
-function OptionsItem({
-  text,
-  onClick,
-}: {
-  text: string;
-  onClick?: () => void;
-}) {
+function OptionsItem({ text, onClick }: { text: string; onClick?: () => void }) {
   return (
     <>
-      <Button style={{ padding: '12px 8px' }} onClick={onClick}>
+      <Button style={{ padding: "12px 8px" }} onClick={onClick}>
         {text}
       </Button>
       <Divider />

@@ -92,7 +92,9 @@ const SettingsPage = () => {
   }
   return (
     <Layout title='Edit Profile'>
-      <section className={classes.section}>
+
+          <ProfileSettings />
+      {/* <section className={classes.section}>
         <IconButton
           edge='start'
           onClick={toggleDrawer}
@@ -100,7 +102,7 @@ const SettingsPage = () => {
         >
           <MenuIcon />
         </IconButton>
-        <nav>
+        {/* <nav>
           <Hidden smUp implementation='css'>
             <Drawer
               variant='temporary'
@@ -126,11 +128,9 @@ const SettingsPage = () => {
               </Drawer>
             </Box>
           </Hidden>
-        </nav>
-        <main>
-          <ProfileSettings />
-        </main>
-      </section>
+        </nav> 
+      </section> 
+      */}
     </Layout>
   );
 };
@@ -146,7 +146,7 @@ const ProfileSettings = () => {
   const [username, setUsername] = useState<string>(authUser?.username!);
   const [bio, setBio] = useState<string>(authUser?.bio!);
   const [loading, setLoading] = useState(false);
-
+  const navigate = useNavigate();
   const getImage = (e: ChangeEvent<HTMLInputElement>) => {
     const target = e.target as HTMLInputElement;
     const file: File = (target.files as FileList)[0];
@@ -168,7 +168,7 @@ const ProfileSettings = () => {
           (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
       },
       (error) => {
-        console.log('Something went wrong', error);
+        // console.log('Something went wrong', error);
       },
       () => {
         getDownloadURL(uploadTask.snapshot.ref).then(async (url) => {
@@ -187,6 +187,7 @@ const ProfileSettings = () => {
             .then(() => {
               dispatch(updateUser(authUser?.uuid!));
               setLoading(false);
+              navigate(`/profile/${authUser?.uuid}`);
             })
             .catch((err) => {
               alert(err);
@@ -197,15 +198,15 @@ const ProfileSettings = () => {
   };
 
   return (
-    <section className={classes.container}>
+    <section style={{padding: 15}}>
       <div className={classes.pictureSectionItem}>
         <UserAvatar
-          size={38}
+          size={50}
           src={previewImage ? previewImage : authUser?.profileImage}
           username={authUser?.username}
         />
         <div className={classes.justifySelfStart}>
-          <Typography className={classes.typography}>
+          <Typography className={classes.typography} sx={{marginLeft: "8px"}}>
             {authUser?.username}
           </Typography>
           <Button
@@ -254,7 +255,7 @@ const ProfileSettings = () => {
             }}
           />
         </div>
-        <div className={classes.sectionItem}>
+        <div >
           <aside></aside>
           <TextField
             variant='outlined'
@@ -266,15 +267,16 @@ const ProfileSettings = () => {
             value={bio}
           />
         </div>
-        <div className={classes.sectionItem}>
+        <div style={{marginTop: 15}}>
           <div />
           <Button
             type='submit'
             variant='contained'
             color='primary'
             className={classes.justifySelfStart}
+            disabled={loading}
           >
-            {loading ? <CircularProgress /> : 'Sumbit'}
+            {loading ? "Loading..." : 'Sumbit'}
           </Button>
         </div>
       </form>

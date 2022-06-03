@@ -4,59 +4,72 @@ import Story from "./Story";
 import { Modal, Typography } from "@mui/material";
 import { collection, onSnapshot, orderBy, query } from "firebase/firestore";
 import { db } from "../../service/firebaseSetup";
+import Stories from "react-insta-stories";
+
 const style = {
-  position: 'absolute',
-  top: '50%',
-  left: '50%',
-  transform: 'translate(-50%, -50%)',
+  position: "absolute",
+  top: "50%",
+  left: "50%",
+  transform: "translate(-50%, -50%)",
   width: 400,
-  bgcolor: 'background.paper',
-  border: '2px solid #000',
+  bgcolor: "background.paper",
+  border: "2px solid #000",
   boxShadow: 24,
-  p: 4,
+  p: 4
 };
 
-const Stories = () => {
+const StoriesComponent = () => {
   const [stories, setStories] = useState<any[]>([]);
   const [open, setOpen] = React.useState(false);
-  const [image, setImage] = useState<string>();
+  const [image, setImage] = useState<string | any>();
+  const [images, setImages] = useState<any[]>([]);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
   useEffect(() => {
-    onSnapshot(
-      query(collection(db, "stories"), orderBy("timestamp", "desc")),
-      (snapshot) => {
-        setStories(snapshot.docs);
-      }
-    );
+    onSnapshot(query(collection(db, "stories"), orderBy("timestamp", "desc")), (snapshot) => {
+      setStories(snapshot.docs);
+      snapshot.docs.forEach((story) => {
+        setImages(images.concat(story.data().storyImage))
+      })
+    });
   }, [db]);
-  return stories.length ?(
+  return stories.length ? (
     <Box
       sx={{
-        display: "flex",
         padding: "1.5rem",
         background: "#fff",
         marginTop: "2rem",
         borderWidth: "1px",
         borderColor: "#edf2f7",
         borderRadius: "0.125rem",
-        overflowX: "scroll"
+        marginBottom: "100px"
       }}>
-      {stories.map((story) => (
-        <Story key={story?.data().uuid} story={story.data()} handleOpen={handleOpen} setImage={setImage} />
-      ))}
+      <Box
+        sx={{
+          display: "flex",
+          overflow: "scroll",
+          position: "absolute",
+          width: "100%"
+        }}>
+        {stories.map((story) => (
+          <Story
+            key={story?.data().uuid}
+            story={story.data()}
+            handleOpen={handleOpen}
+            setImage={setImage}
+          />
+        ))}
+      </Box>
 
       <Modal
         open={open}
         onClose={handleClose}
         aria-labelledby="modal-modal-title"
-        aria-describedby="modal-modal-description">
-        <Box sx={style}>
-          <img src={image} height={100} width={100}/>
-        </Box>
+        aria-describedby="modal-modal-description" sx={{zIndex: 1600}}>
+        <Stories stories={images!} defaultInterval={1500} width={432} height={768} />
       </Modal>
     </Box>
-  ): null
+  ) : null;
 };
 
-export default Stories;
+export default StoriesComponent;

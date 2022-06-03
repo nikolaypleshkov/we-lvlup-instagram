@@ -34,16 +34,18 @@ const LoginPage = () => {
           justifyContent='center'
           spacing={4}
           className={classes.gridContainer}
+          sx={{
+            marginLeft: "0 !important" }}
         >
           <Grid item className={classes.card}>
             <CardBox>
               <LoginForm />
             </CardBox>
-            <CardBox>
-              <Typography align='center' className={classes.typo}>
-                Dont have an account? <Button component={Link} to={"/register"} >Sign up</Button>
-              </Typography>
-            </CardBox>
+                <CardBox>
+                    <Typography align='center' className={classes.typo}>
+                        Create an account? <Button component={Link} to="/register" color="primary">Sign up</Button>
+                    </Typography>
+                </CardBox>
           </Grid>
         </Grid>
         {/* <Footer /> */}

@@ -9,7 +9,6 @@ import { withStyles, makeStyles } from "@mui/styles";
       gridGap: 35,
       [theme.breakpoints.down("sm")]: {
         gridTemplateColumns: "minmax(auto, 600px)",
-        justifyContent: "center"
       },
       "&.slickSlider": {
         display: "grid"
