@@ -109,6 +109,7 @@ export default function SwipeableEdgeDrawer(props: Props) {
             {props.data.map((element: any, i: any) => (
               <Button
                 component={Link}
+                link-name={`Go to ${element.path}`}
                 to={element.path}
                 key={i}
                 sx={{
