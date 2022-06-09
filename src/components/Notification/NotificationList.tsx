@@ -84,8 +84,8 @@ const UserInfo = ({ id, isLike, isFollow }: { id: string; isLike: boolean; isFol
           <Typography variant="body1">{user?.username}</Typography>
         </Link>
         <Typography variant="body2" color="textSecondary" className={classes.typography}>
-          {isLike && `likes your photo. 4d`}
-          {isFollow && `started following you. 5d`}
+          {isLike && `likes your photo. now`}
+          {isFollow && `started following you. now`}
         </Typography>
       </div>
     </div>

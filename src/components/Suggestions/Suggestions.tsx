@@ -37,7 +37,7 @@ const Suggestions = () => {
 
   useEffect(() => {
     const fetchUsers = async () => {
-      const q = query(collection(db, "users"), limit(5));
+      const q = query(collection(db, "users"), limit(8));
       const querySnapshot = await getDocs(q);
       let suggested: Array<DocumentData> = [];
       querySnapshot.forEach((doc) => {
