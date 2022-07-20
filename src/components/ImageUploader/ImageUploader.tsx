@@ -1,6 +1,20 @@
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
+/* eslint-disable @typescript-eslint/no-non-null-asserted-optional-chain */
 import React, { ChangeEvent, FormEvent, useState } from "react";
-import { Box, Button } from "@mui/material";
-import { app, db, storage } from "service/firebaseSetup";
+import {
+  Box,
+  Button,
+  Card,
+  CardActions,
+  CardContent,
+  CardHeader,
+  CardMedia,
+  Grid,
+  Skeleton,
+  Stack,
+  TextField
+} from "@mui/material";
+import { app, db, storage } from "../../service/firebaseSetup";
 import { getDownloadURL, ref, uploadBytes, uploadBytesResumable } from "firebase/storage";
 import {
   addDoc,
@@ -9,36 +23,85 @@ import {
   FieldValue,
   getDocs,
   query,
+  setDoc,
   Timestamp,
   updateDoc,
   where
 } from "firebase/firestore";
 import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "redux/store";
 import LinearProgress from "@mui/material/LinearProgress";
 import { v4 as uuidv4 } from "uuid";
-import { profileConfig } from "redux/actions/authActions";
 import Typography from "@mui/material/Typography";
 import { useNavigate } from "react-router-dom";
-
+import { userSelector } from "../../redux/selectors/user";
+import { updateUser } from "../../redux/feature/userSlice";
+import { AppDispatch } from "../../redux/store";
+import UserAvatar from "../UserAvatart/UserAvatart";
+import heic2any from "heic2any";
+// import uploadHEIC from 'heic2any';
+import "./ImageUpload.css";
 const ImageUploader = () => {
   const [description, setDescription] = useState("");
   const [imageUrl, setImageUrl] = useState("");
   const [image, setImage] = useState<File | null>(null);
+  const [imagePreview, setImagePreview] = useState<string>();
   const [progress, setProgress] = useState(0);
-  const { authUser } = useSelector((state: RootState) => state.auth);
-  const dispatch = useDispatch();
+  const [message, setMessage] = useState<string>("false");
+  const [fileBlob, setFileBlob] = useState();
+  const authUser = useSelector(userSelector);
+  const dispatch: AppDispatch = useDispatch();
   const navigate = useNavigate();
-  const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
-    const target = event.target as HTMLInputElement;
-    const file: File = (target.files as FileList)[0];
+
+  // const convertToHeic = async(url: RequestInfo) => {
+  //   const output = await fetch(url).then(async (data) => {
+  //     const buffer = Buffer.from(await data.arrayBuffer())
+  //     return heicConvert({buffer, format: "PNG"});
+  //   });
+
+  //   const imgBase64 = btoa(
+  //     output.reduce(
+  //       (data: any, byte: number) => `${data}${String.fromCharCode(byte)}`
+  //     )
+  //   );
+
+  //   setImagePreview(`data:image/png;base64,${imgBase64}`);
+  // }
+
+  const handleChange = async (event: ChangeEvent<HTMLInputElement>) => {
+    const target = event.target.files as FileList;
+    const file = target[0];
     if (file) {
-      setImage(file);
+      if (file.type.toLowerCase() === "image/heic" || file.name.toLowerCase().includes(".heic")) {
+        const blobUrl = URL.createObjectURL(file);
+        // convert "fetch" the new blob url
+        const blobRes = await fetch(blobUrl);
+
+        // convert response to blob
+        const blob = await blobRes.blob();
+
+        // convert to PNG - response is blob
+        const conversionResult: any = await heic2any({ blob });
+        // setImage(file);
+        setFileBlob(conversionResult);
+        // convert to blob url
+        const url = URL.createObjectURL(conversionResult);
+        setImagePreview(url);
+        setImage(file);
+      } else {
+        const reader = new FileReader();
+        reader.onload = () => {
+          reader.readAsDataURL(file);
+        };
+        const _file: any = file;
+        setFileBlob(_file);
+        setImage(file);
+        setImagePreview(URL.createObjectURL(file));
+      }
     }
   };
   const handleUpload = () => {
     const fileRef = ref(storage, `images/${image?.name}`);
-    const uploadTask = uploadBytesResumable(fileRef, image!);
+    const uploadTask = uploadBytesResumable(fileRef, fileBlob!);
     uploadTask.on(
       "state_changed",
       (snapshot) => {
@@ -46,11 +109,11 @@ const ImageUploader = () => {
         setProgress(progress);
       },
       (error) => {
-        console.log("Something went wrong", error);
+        // console.error("Something went wrong", error);
       },
       () => {
         getDownloadURL(uploadTask.snapshot.ref).then(async (url) => {
-          let postId: string = "";
+          let postId = "";
           setImageUrl(url);
           await addDoc(collection(db, "posts"), {
             timestamp: Timestamp.now(),
@@ -68,21 +131,30 @@ const ImageUploader = () => {
               const postRef = doc(db, "posts", document.id);
               await updateDoc(postRef, {
                 uuid: document.id
+              }).catch((err) => {
+                alert("Something went wrong: " + err);
+                setMessage(err);
               });
+
+              return postId;
             })
-            .then(async () => {
+            .then(async (id) => {
               const q = query(collection(db, "users"), where("uuid", "==", authUser?.uuid));
               const querySnapshot = await getDocs(q);
               const snapshot = querySnapshot.docs[0];
               const posts: Array<string> = snapshot.data().posts;
               const userRef = doc(db, "users", snapshot.id);
-              posts.push(postId);
+              posts.push(id);
               await updateDoc(userRef, {
                 posts: posts
               });
+              setMessage("Post is uploaded");
+              setTimeout(() => {
+                navigate("/");
+              }, 1000);
             })
             .then(() => {
-              dispatch(profileConfig(authUser?.uuid!));
+              dispatch(updateUser(authUser?.uuid!));
             });
           setProgress(0);
           setDescription("");
@@ -92,30 +164,114 @@ const ImageUploader = () => {
     );
   };
   return (
-    <div>
-      <Button onClick={() => navigate(-1)}>Go Back</Button>
-      <Box
-        sx={{
-          marginTop: "10%"
-        }}>
-        <Typography variant="h4" mb={5}>
-          Upload Post
-        </Typography>
-        <img src={imageUrl} alt="post image" width={200} />
+    // <div
+    //   style={{
+    //     marginTop: '5rem',
+    //   }}
+    // >
+    //   <Box
+    //     sx={{
+    //       marginTop: '10%',
+    //     }}
+    //   >
+    //     <Grid container spacing={2} columns={16}>
+    //       <Grid item xs={8}>
+    //         <Box mt={2}>
+    //           <LinearProgress variant='determinate' value={progress} />
+    //           <input type='file' onChange={(e) => handleChange(e)} />
+    //         </Box>
+    //       </Grid>
+    //       <Grid item xs={8}>
+    //         {imagePreview && (
+    //           <Box
+    //             sx={{
+    //               display: 'grid',
+    //               placeItems: 'center',
+    //             }}
+    //           >
+    //             <TextField
+    //               placeholder='Describe your post...'
+    //               value={description}
+    //               onChange={(e) => setDescription(e.target.value)}
+    //             />
 
-        <LinearProgress variant="determinate" value={progress} />
+    //             <Card sx={{ minWidth: '100%', marginTop: '2rem' }}>
+    //               <CardHeader
+    //                 avatar={
+    //                   <UserAvatar
+    //                     username={authUser?.username}
+    //                     src={authUser?.profileImage}
+    //                     size={30}
+    //                   />
+    //                 }
+    //                 subheader={authUser?.username}
+    //               />
+    //               <CardMedia>
+    //                 <img
+    //                   src={imagePreview}
+    //                   alt='post image'
+    //                   width='100%'
+    //                   loading='lazy'
+    //                   style={{
+    //                     marginTop: '2rem',
+    //                   }}
+    //                 />
+    //               </CardMedia>
+    //               <CardActions></CardActions>
+    //               <CardContent>
+    //                 <Box display='flex'>
+    //                   <Typography variant='body2' fontWeight={800} mr={2}>
+    //                     {authUser?.username}
+    //                   </Typography>
+    //                   <Typography variant='body2'>{description}</Typography>
+    //                 </Box>
+    //               </CardContent>
+    //             </Card>
+    //             <Button
+    //               onClick={handleUpload}
+    //               disabled={!imagePreview.toString().trim()}
+    //             >
+    //               Upload
+    //             </Button>
+    //           </Box>
+    //         )}
+    //       </Grid>
+    //     </Grid>
+    //   </Box>
+    // </div>
 
-        <input
-          type="text"
-          placeholder="Describe your post..."
-          onChange={(e) => setDescription(e.target.value)}
+    <div className="imageUpload">
+      <h3 className="uploadTitle">Post an image</h3>
+      <input type="file" onChange={handleChange} className="imageInput" />
+      <Stack direction="column" spacing={2} className="postRow">
+        <TextField
+          id="outlined-basic"
+          label="Enter a caption"
+          variant="outlined"
           value={description}
-          style={{marginTop: 20}}
+          onChange={(e) => setDescription(e.target.value)}
+          type="text"
+          className="captionField"
+          size="small"
         />
 
-        <input type="file" onChange={(e) => handleChange(e)} />
-        <Button onClick={handleUpload}>Upload</Button>
-      </Box>
+      {imagePreview && (
+          <img
+            src={imagePreview}
+            alt="Preview"
+            width="100%"
+            height="500px"
+            loading="lazy"
+            style={{
+              marginTop: "2rem"
+            }}
+          />
+        )}
+        <Button variant="outlined" className="postButton" onClick={handleUpload}>
+          Post
+        </Button>
+      </Stack>
+      <LinearProgress variant="determinate" value={progress} />
     </div>
   );
 };

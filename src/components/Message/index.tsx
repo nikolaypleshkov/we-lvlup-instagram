@@ -1,7 +1,8 @@
+import { SerializedError } from '@reduxjs/toolkit';
 import React, { FunctionComponent } from 'react'
 
 interface MessageInterface {
-    message: string;
+    message?: string;
     type: "danger" | "success"
 }
 const Message: FunctionComponent<MessageInterface> = ({ message, type}) => {

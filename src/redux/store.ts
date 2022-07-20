@@ -1,29 +1,41 @@
-import { combineReducers, createStore, applyMiddleware } from "redux";
-import thunk from "redux-thunk";
-import authReducer from "./reducers/authReducer";
-import { composeWithDevTools } from '@redux-devtools/extension';
-import { persistStore, persistReducer } from 'redux-persist'
+import { combineReducers, configureStore } from '@reduxjs/toolkit';
+import { userSlice } from './feature/userSlice';
+
+import {
+  persistStore,
+  persistReducer,
+  FLUSH,
+  REHYDRATE,
+  PAUSE,
+  PERSIST,
+  PURGE,
+  REGISTER,
+} from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
-import postReducer from "./reducers/postReducer";
-import userReducer from "./reducers/userReducer";
+import { imageSlice } from './feature/imageSlice';
+
 const persistConfig = {
-    key: "root",
-    storage
+  key: 'root',
+  version: 1,
+  storage,
 };
-
 const rootReducer = combineReducers({
-    auth: authReducer,
-    posts: postReducer
+  auth: userSlice.reducer,
+  image: imageSlice.reducer
 });
-
 const persistedReducer = persistReducer(persistConfig, rootReducer);
 
-const store = createStore(
-    persistedReducer,
-    composeWithDevTools(applyMiddleware(thunk)),
-);
-const persistor = persistStore(store)
+export const store = configureStore({
+  reducer: persistedReducer,
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware({
+      serializableCheck: {
+        ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
+      },
+    }),
+});
 
-export type RootState = ReturnType<typeof rootReducer>;
+export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;
-export default { store, persistor}
+
+export const persistor = persistStore(store);

@@ -1,108 +1,73 @@
-import React, { useState, useEffect } from "react";
-import { BrowserRouter, Routes, Route, Navigate, useLocation } from "react-router-dom";
-import "./styles.scss";
-import "@fontsource/roboto";
-import AuthenticatePage from "./pages/AuthenticatePage/AuthenticatePage";
-import HomePage from "./pages/HomePage/HomePage";
-import LoginPage from "./pages/LoginPage/LoginPage";
-import RegisterPage from "./pages/RegisterPage/RegisterPage";
+import { collection, DocumentData, getDocs, query } from 'firebase/firestore';
+import React, { useEffect, useState } from 'react';
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import './App.css';
+import HomePage from './pages/Home/HomePage';
+import { db } from './service/firebaseSetup';
 import { ThemeProvider } from "@mui/system";
 import { createTheme } from "@mui/material/styles";
-import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "redux/store";
-import ProtectedRoute from "routes/ProtectedRoute";
-import PrivateRoutes from "routes/PrivateRoutes";
-import UserPage from "pages/UserPage/UserPage";
-import TopBar from "layouts/TopBar/TopBar";
-import { logout } from "redux/actions/authActions";
-import UserSettingPage from "pages/UserSettingPage/UserSettingPage";
-import UploadPage from "pages/UploadPage/UploadPage";
-import PostPage from "pages/PostPage/PostPage";
-import { Fuego, FuegoProvider } from "@nandorojo/swr-firestore";
-import CommentsPage from "pages/CommentsPage/CommentsPage";
-import SettingsPage from "pages/SettingsPage/SettingsPage";
-import FollowingPage from "pages/FollowingPage/FollowingPage";
+import LoginPage from './pages/Login/LoginPage';
+import RegisterPage from './pages/RegisterPage/RegisterPage';
+import SettingsPage from './pages/SettingsPage/SettingsPage';
+import ProfilePage from './pages/ProfilePage/ProfilePage';
+import FollowingPage from './pages/FollowingPage/FollowingPage';
+import PostPage from './pages/PostPage/PostPage';
+import CommentsPage from './pages/CommentsPage/CommentsPage';
+import UploadPage from './pages/UploadPage/UploadPage';
+import UploadStoryPage from './pages/UploadPage/UploadStoryPage';
+import EditPage from './pages/EditPage/EditPage';
+import MessagePage from './pages/MessagePage/MessagePage';
+import FollowersPage from './pages/FollowersPage/FollowersPage';
+import Logout from './pages/Logout/Logout';
+import MobileMessagePage from './pages/MessagePage/MobileMessagePage';
+import MessageRoom from './pages/MessagePage/MessageRoom';
+import UploadFromDevice from './pages/UploadPage/UploadFromDevice';
+import SearchPage from './pages/SearchPage/SearchPage';
 
 const theme = createTheme({
   palette: {
     mode: "light"
   }
 });
-const App = (): JSX.Element => {
-  const location = useLocation();
-  const dispatch = useDispatch();
-  useEffect(() => {
-    if (location.pathname === "/logout") {
-      dispatch(logout());
-    }
-    console.log(location.pathname);
-  }, [location, dispatch]);
 
+function App() {
+  const [first, setfirst] = useState<DocumentData[]>([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const q = query(collection(db, 'users'));
+      const docsnap = await getDocs(q);
+      setfirst(docsnap.docs);
+    };
+    fetchData();
+  }, []);
   return (
-      <ThemeProvider theme={theme}>
-        <Routes>
-          <Route
-            path="/"
-            element={
-              <PrivateRoutes>
-                <AuthenticatePage />
-              </PrivateRoutes>
-            }></Route>
-          <Route
-            path="/login"
-            element={
-              <PrivateRoutes>
-                <LoginPage />
-              </PrivateRoutes>
-            }></Route>
-          <Route
-            path="/register"
-            element={
-              <PrivateRoutes>
-                <RegisterPage />
-              </PrivateRoutes>
-            }></Route>
-          <Route
-            path="/home"
-            element={
-              <ProtectedRoute>
-                <HomePage />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/profile/:id"
-            element={
-              <ProtectedRoute>
-                <UserPage />
-              </ProtectedRoute>
-            }
-          />
-          <Route path="/logout" element={<Navigate to="/" replace state={{ from: location }} />} />
-          <Route path="/user-settings" element={<UserSettingPage />} />
-          <Route
-            path="/add-post"
-            element={
-              <ProtectedRoute>
-                <UploadPage />
-              </ProtectedRoute>
-            }
-          />
-          <Route path="/settings" element={
-            <ProtectedRoute>
-              <SettingsPage />
-            </ProtectedRoute>
-          } />
-          <Route path="/following/:id" element={
-            <ProtectedRoute>
-              <FollowingPage   />
-            </ProtectedRoute>
-          } />
-          <Route path="/post/:id" element={<PostPage />} />
-          <Route path="/comments/:id" element={<CommentsPage />} />
-        </Routes>
-      </ThemeProvider>
+
+    <ThemeProvider theme={theme}>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<HomePage />} />
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/register" element={<RegisterPage />} />
+        <Route path="/settings" element={<SettingsPage />} />
+        <Route path="/profile/:id" element={<ProfilePage />} />
+        <Route path="/following/:id" element={<FollowingPage />} />
+        <Route path="/followers/:id" element={<FollowersPage />} />
+        <Route path="/post/:id" element={<PostPage />} />
+        <Route path="/comments/:id" element={<CommentsPage />} />
+        <Route path="/upload/post" element={<UploadPage />} />
+        <Route path="/upload/story" element={<UploadStoryPage />} />
+        <Route path="/upload/fromDevice" element={<UploadFromDevice />} />
+        <Route path="/editImage" element={<EditPage />} />
+        <Route path="/messages" element={<MessagePage />} />
+        <Route path="/logout" element={<Logout />} />
+        <Route path="/mobile-chat" element={<MobileMessagePage />} />
+        <Route path="/messageRoom/:id" element={<MessageRoom />} />
+        <Route path="/search" element={<SearchPage />} />
+      </Routes>
+    </BrowserRouter>
+    </ThemeProvider>
   );
-};
+}
 
 export default App;

@@ -1,3 +1,4 @@
+
 import React, { Dispatch, useState, ReactEventHandler } from "react";
 import { Global } from "@emotion/react";
 import { styled } from "@mui/material/styles";
@@ -46,7 +47,6 @@ const Puller = styled(Box)(({ theme }) => ({
 
 export default function SwipeableEdgeDrawer(props: Props) {
   const { window, openStauts, setOpenState } = props;
-  const match = useMediaQuery("(max-width: 600px)");
   const toggleSwiper = () => {
     setOpenState(false);
   };
@@ -76,7 +76,7 @@ export default function SwipeableEdgeDrawer(props: Props) {
         disableSwipeToOpen={false}
         ModalProps={{
           keepMounted: true
-        }}>
+        }}>     
         <StyledBox
           sx={{
             position: "absolute",
@@ -109,6 +109,7 @@ export default function SwipeableEdgeDrawer(props: Props) {
             {props.data.map((element: any, i: any) => (
               <Button
                 component={Link}
+                link-name={`Go to ${element.path}`}
                 to={element.path}
                 key={i}
                 sx={{
