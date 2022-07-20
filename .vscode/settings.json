@@ -1,0 +1,12 @@
+{
+    "eslint.debug": true,
+    "eslint.probe": [
+        "javascript",
+        "javascriptreact",
+        "typescript",
+        "typescriptreact",
+        "html",
+        "react",
+        "markdown"
+    ]
+}
